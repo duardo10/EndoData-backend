@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
@@ -63,6 +61,7 @@ services:
 volumes:
   postgres_data:
   pgadmin_data:
+  node_modules_volume:
 
 networks:
   app-network:
