@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
-@Injectable()
+/**
+ * Serviço principal da aplicação.
+ */
 export class AppService {
+  /**
+   * Retorna mensagem de boas-vindas.
+   * @returns String de saudação
+   */
   getHello(): string {
     return 'Hello World! NestJS com PostgreSQL rodando no Docker 🚀';
   }

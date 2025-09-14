@@ -2,6 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
+/**
+ * Função principal que inicializa a aplicação NestJS.
+ * - Configura CORS, validação global, prefixo de API e inicia o servidor.
+ */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
