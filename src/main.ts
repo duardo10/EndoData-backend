@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,11 +12,25 @@ async function bootstrap() {
     credentials: true,
   });
 
+  // Filtro global de exceções
+  app.useGlobalFilters(new HttpExceptionFilter());
+
   // Pipes de validação global
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
     whitelist: true,
     forbidNonWhitelisted: true,
+    exceptionFactory: (errors) => {
+      const result = errors.map((error) => ({
+        property: error.property,
+        value: error.value,
+        constraints: error.constraints,
+      }));
+      return new HttpException({
+        message: 'Dados inválidos',
+        details: result,
+      }, HttpStatus.BAD_REQUEST);
+    },
   }));
 
   // Prefixo global para API

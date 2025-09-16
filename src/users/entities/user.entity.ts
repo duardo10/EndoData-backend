@@ -11,6 +11,12 @@ export class User {
   @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
+  @Column({ type: 'varchar', length: 14, nullable: true })
+  cpf: string | null;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  crm: string | null;
+
   @Column({ type: 'varchar', length: 255, name: 'password_hash' })
   passwordHash: string;
 
