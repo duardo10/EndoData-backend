@@ -20,13 +20,23 @@ export class UsersService {
    * @returns Usuário criado
    */
   async create(createUserDto: CreateUserDto): Promise<User> {
+    // Verifica se o e-mail já está cadastrado
+    const existingUser = await this.usersRepository.findOne({ where: { email: createUserDto.email } });
+    if (existingUser) {
+      throw new Error('E-mail já cadastrado.');
+    }
+
+    // Verifica se o CRM já está cadastrado
+    const existingCrm = await this.usersRepository.findOne({ where: { crm: createUserDto.crm } });
+    if (existingCrm) {
+      throw new Error('CRM já cadastrado.');
+    }
+
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    
     const user = this.usersRepository.create({
       ...createUserDto,
       passwordHash: hashedPassword,
     });
-
     return this.usersRepository.save(user);
   }
 
