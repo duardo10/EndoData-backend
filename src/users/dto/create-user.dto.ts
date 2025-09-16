@@ -10,12 +10,12 @@ export class CreateUserDto {
   email: string;
 
   @IsString({ message: 'CPF deve ser uma string' })
-  @IsOptional()
-  cpf?: string;
+  @IsNotEmpty({ message: 'CPF é obrigatório' })
+  cpf: string;
 
   @IsString({ message: 'CRM deve ser uma string' })
-  @IsOptional()
-  crm?: string;
+  @IsNotEmpty({ message: 'CRM é obrigatório' })
+  crm: string;
 
   @IsString({ message: 'Senha deve ser uma string' })
   @MinLength(8, { message: 'Senha deve ter pelo menos 8 caracteres' })

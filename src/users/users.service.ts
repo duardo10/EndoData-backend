@@ -13,9 +13,22 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Pick<User, 'id' | 'name' | 'email' | 'cpf' | 'crm' | 'createdAt' | 'updatedAt'>> {
-    const existing = await this.usersRepository.findOne({ where: { email: createUserDto.email } });
-    if (existing) {
+    // Verificar e-mail duplicado
+    const existingEmail = await this.usersRepository.findOne({ where: { email: createUserDto.email } });
+    if (existingEmail) {
       throw new ConflictException('E-mail já cadastrado');
+    }
+
+    // Verificar CPF duplicado
+    const existingCpf = await this.usersRepository.findOne({ where: { cpf: createUserDto.cpf } });
+    if (existingCpf) {
+      throw new ConflictException('CPF já cadastrado');
+    }
+
+    // Verificar CRM duplicado
+    const existingCrm = await this.usersRepository.findOne({ where: { crm: createUserDto.crm } });
+    if (existingCrm) {
+      throw new ConflictException('CRM já cadastrado');
     }
 
     const hashedPassword = await bcrypt.hash(createUserDto.senha, 10);
@@ -23,8 +36,8 @@ export class UsersService {
     const user = this.usersRepository.create({
       name: createUserDto.nome,
       email: createUserDto.email,
-      cpf: createUserDto.cpf ?? null,
-      crm: createUserDto.crm ?? null,
+      cpf: createUserDto.cpf,
+      crm: createUserDto.crm,
       passwordHash: hashedPassword,
     });
 
