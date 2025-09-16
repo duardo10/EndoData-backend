@@ -16,9 +16,6 @@ export class User {
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
   especialidade: string;
 
-  @Column({ type: 'varchar', length: 255, name: 'senha_hash', nullable: true })
-  senhaHash: string;
-
   @Column({ type: 'boolean', name: 'is_administrador', default: false })
   isAdministrador: boolean;
 
