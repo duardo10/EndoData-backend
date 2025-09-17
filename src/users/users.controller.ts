@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus } from
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 
-@Controller('usuarios')
+@Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
