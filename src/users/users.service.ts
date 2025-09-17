@@ -17,9 +17,9 @@ export class UsersService {
   /**
    * Cria um novo usuário com senha criptografada.
    * @param createUserDto Dados para criação do usuário
-   * @returns Usuário criado
+   * @returns Usuário criado (sem passwordHash)
    */
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
     // Verifica se o e-mail já está cadastrado
     const existingUser = await this.usersRepository.findOne({ where: { email: createUserDto.email } });
     if (existingUser) {
@@ -37,7 +37,11 @@ export class UsersService {
       ...createUserDto,
       passwordHash: hashedPassword,
     });
-    return this.usersRepository.save(user);
+    const savedUser = await this.usersRepository.save(user);
+    
+    // Remove passwordHash da resposta
+    const { passwordHash, ...userWithoutPassword } = savedUser;
+    return userWithoutPassword;
   }
 
   /**
