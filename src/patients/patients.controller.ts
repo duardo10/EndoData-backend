@@ -15,6 +15,10 @@ import { UpdatePatientDto } from './dto/update-patient.dto';
 
 @Controller('patients')
 export class PatientsController {
+  /**
+   * Controlador responsável pelas rotas de pacientes.
+   * Disponibiliza endpoints para CRUD e consultas específicas.
+   */
   constructor(private readonly patientsService: PatientsService) {}
 
   /**

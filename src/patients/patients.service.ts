@@ -9,6 +9,9 @@ import { CpfUtils } from '../common/decorators/is-cpf.decorator';
 
 @Injectable()
 export class PatientsService {
+  /**
+   * Serviço que encapsula as regras de negócio de pacientes.
+   */
   constructor(
     @InjectRepository(Patient)
     private patientsRepository: Repository<Patient>,

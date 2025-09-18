@@ -5,6 +5,10 @@ import { PatientsController } from './patients.controller';
 import { Patient } from './entities/patient.entity';
 import { User } from '../users/entities/user.entity';
 
+/**
+ * Módulo de pacientes.
+ * Reúne controller, service e entidades relacionadas a pacientes.
+ */
 @Module({
   imports: [TypeOrmModule.forFeature([Patient, User])],
   controllers: [PatientsController],

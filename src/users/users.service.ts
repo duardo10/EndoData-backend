@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 
 /**
  * Serviço responsável por operações relacionadas ao usuário.
+ * Fornece métodos para criar, listar, buscar e remover usuários.
  */
 export class UsersService {
   constructor(
@@ -16,8 +17,9 @@ export class UsersService {
 
   /**
    * Cria um novo usuário com senha criptografada.
+   * Valida unicidade de e-mail, CPF e CRM.
    * @param createUserDto Dados para criação do usuário
-   * @returns Usuário criado (sem passwordHash)
+   * @returns Usuário criado (campos públicos)
    */
   async create(createUserDto: CreateUserDto): Promise<Pick<User, 'id' | 'name' | 'email' | 'cpf' | 'crm' | 'createdAt' | 'updatedAt'>> {
     // Verificar e-mail duplicado
@@ -66,7 +68,7 @@ export class UsersService {
   /**
    * Busca um usuário pelo ID (campos públicos).
    * @param id ID do usuário
-   * @returns Usuário encontrado ou undefined
+   * @returns Usuário encontrado ou null
    */
   async findOne(id: string): Promise<Pick<User, 'id' | 'name' | 'email' | 'cpf' | 'crm' | 'createdAt' | 'updatedAt'>> {
     const user = await this.usersRepository.findOne({

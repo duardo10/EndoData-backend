@@ -6,7 +6,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 /**
  * Função principal que inicializa a aplicação NestJS.
- * - Configura CORS, validação global, prefixo de API e inicia o servidor.
+ * Configura CORS, validação global, prefixo de API, Swagger e inicia o servidor.
  */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

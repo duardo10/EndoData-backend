@@ -2,6 +2,9 @@ import { IsEmail, IsEnum, IsOptional, IsString, IsDateString, Length, Matches, I
 import { IsCpf } from '../../common/decorators/is-cpf.decorator';
 import { BloodType, PatientGender } from '../entities/patient.entity';
 
+/**
+ * DTO para atualização parcial de pacientes.
+ */
 export class UpdatePatientDto {
   @IsOptional()
   @IsString()

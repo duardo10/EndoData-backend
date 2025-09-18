@@ -7,8 +7,15 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 
+/**
+ * Filtro global para padronizar respostas de erro HTTP.
+ * Converte exceções em um payload consistente para o cliente.
+ */
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  /**
+   * Intercepta exceções lançadas em rotas/handlers HTTP e formata a resposta.
+   */
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
