@@ -1,7 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 /**
  * Função principal que inicializa a aplicação NestJS.
@@ -16,11 +17,25 @@ async function bootstrap() {
     credentials: true,
   });
 
+  // Filtro global de exceções
+  app.useGlobalFilters(new HttpExceptionFilter());
+
   // Pipes de validação global
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
     whitelist: true,
     forbidNonWhitelisted: true,
+    exceptionFactory: (errors) => {
+      const result = errors.map((error) => ({
+        property: error.property,
+        value: error.value,
+        constraints: error.constraints,
+      }));
+      return new HttpException({
+        message: 'Dados inválidos',
+        details: result,
+      }, HttpStatus.BAD_REQUEST);
+    },
   }));
 
   // Prefixo global para API

@@ -20,11 +20,14 @@ export class User {
   @Column({ type: 'boolean', name: 'is_administrador', default: false })
   isAdministrador: boolean;
 
-  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
-  crm: string;
-
   @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
+
+  @Column({ type: 'varchar', length: 14, unique: true })
+  cpf: string;
+
+  @Column({ type: 'varchar', length: 20, unique: true })
+  crm: string;
 
   @Column({ type: 'varchar', length: 255, name: 'password_hash' })
   passwordHash: string;
