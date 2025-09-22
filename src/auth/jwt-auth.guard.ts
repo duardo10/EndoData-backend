@@ -1,3 +1,9 @@
+/**
+ * Guard de autenticação JWT global.
+ *
+ * Intercepta requisições e aplica a estratégia JWT, exceto quando a rota
+ * estiver marcada explicitamente como pública via decorator @Public().
+ */
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';

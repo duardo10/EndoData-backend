@@ -1,3 +1,9 @@
+/**
+ * Serviço de autenticação.
+ *
+ * Encapsula a validação de credenciais de usuário, geração/validação de
+ * tokens JWT e recuperação de dados de usuário para o fluxo de autenticação.
+ */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,9 +21,14 @@ export class AuthService {
     ) { }
 
     /**
-     * Valida as credenciais do usuário e retorna o token JWT
-     * @param loginDto Dados de login (email e senha)
-     * @returns Token JWT e informações do usuário
+     * Valida as credenciais do usuário e retorna um token JWT assinado.
+     *
+     * - Busca usuário por email
+     * - Compara a senha informada com o hash persistido
+     * - Cria o payload e assina o token JWT
+     *
+     * @param loginDto Credenciais de login (email e senha)
+     * @returns Objeto com `access_token` e os dados do usuário (sem senha)
      */
     async login(loginDto: LoginDto) {
         const { email, password } = loginDto;
@@ -58,9 +69,11 @@ export class AuthService {
     }
 
     /**
-     * Valida um usuário pelo ID (usado pelo JWT Strategy)
-     * @param userId ID do usuário
-     * @returns Dados do usuário sem a senha
+     * Recupera e valida um usuário pelo seu ID.
+     * Utilizado pela estratégia JWT na etapa de validação do token.
+     *
+     * @param userId Identificador do usuário (UUID)
+     * @returns Dados essenciais do usuário (sem senha)
      */
     async validateUser(userId: string): Promise<any> {
         const user = await this.userRepository.findOne({
@@ -76,9 +89,11 @@ export class AuthService {
     }
 
     /**
-     * Verifica se o token JWT é válido
-     * @param token Token JWT
-     * @returns Dados decodificados do token
+     * Verifica a validade de um token JWT.
+     * Lança UnauthorizedException quando o token é inválido/expirado.
+     *
+     * @param token Token JWT em formato Bearer (sem o prefixo)
+     * @returns Payload decodificado quando válido
      */
     async verifyToken(token: string) {
         try {

@@ -1,3 +1,10 @@
+/**
+ * Estratégia JWT para Passport.
+ *
+ * Responsável por extrair o token do header Authorization, validar sua
+ * assinatura e, em seguida, recuperar o usuário correspondente para anexar
+ * ao contexto da requisição (request.user).
+ */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';

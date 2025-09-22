@@ -1,3 +1,9 @@
+/**
+ * Módulo raiz da aplicação.
+ *
+ * Configura variáveis de ambiente, conexão com banco via TypeORM, registra os
+ * módulos de domínio e aplica o guard global de autenticação JWT.
+ */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';

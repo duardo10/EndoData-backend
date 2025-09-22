@@ -1,3 +1,9 @@
+/**
+ * Controller responsável pelos endpoints de autenticação.
+ *
+ * Exposição de rotas públicas para entrada no sistema (login) e integração
+ * com o serviço de autenticação.
+ */
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';

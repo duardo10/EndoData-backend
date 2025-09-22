@@ -1,3 +1,10 @@
+/**
+ * Controller de usuários.
+ *
+ * Expõe endpoints REST para cadastro e consulta de usuários. As rotas são
+ * protegidas por padrão via JwtAuthGuard global, com exceção das rotas
+ * explicitamente marcadas com @Public().
+ */
 import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
