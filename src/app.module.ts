@@ -1,12 +1,21 @@
+/**
+ * Módulo raiz da aplicação.
+ *
+ * Configura variáveis de ambiente, conexão com banco via TypeORM, registra os
+ * módulos de domínio e aplica o guard global de autenticação JWT.
+ */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { PatientsModule } from './patients/patients.module';
+import { AuthModule } from './auth/auth.module';
 import { User } from './users/entities/user.entity';
 import { Patient } from './patients/entities/patient.entity';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 /**
  * Módulo principal da aplicação.
@@ -31,8 +40,15 @@ import { Patient } from './patients/entities/patient.entity';
     }),
     UsersModule,
     PatientsModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule { }

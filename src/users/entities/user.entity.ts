@@ -1,3 +1,9 @@
+/**
+ * Entidade de usuário do sistema.
+ *
+ * Representa profissionais (médicos) e armazena informações de autenticação
+ * e relacionamento com pacientes.
+ */
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Patient } from '../../patients/entities/patient.entity';
 
@@ -40,7 +46,10 @@ export class User {
   @Column({ type: 'varchar', length: 20, unique: true })
   crm: string;
 
-  /** Hash da senha do usuário. */
+  /**
+   * Hash da senha do usuário gerado com bcrypt.
+   * Nunca deve ser retornado em respostas da API.
+   */
   @Column({ type: 'varchar', length: 255, name: 'password_hash' })
   passwordHash: string;
 
