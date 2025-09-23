@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 /**
  * Serviço principal da aplicação.
+ * Fornece métodos utilitários e de status do sistema.
  */
 export class AppService {
   /**

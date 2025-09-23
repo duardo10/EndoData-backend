@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 
 /**
  * Controller principal da aplicação.
+ * Responsável por gerenciar as rotas principais e de saúde do sistema.
  */
 @Controller()
 export class AppController {

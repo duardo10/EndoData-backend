@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 
 /**
  * Serviço responsável por operações relacionadas ao usuário.
+ * Fornece métodos para criar, listar, buscar e remover usuários.
  */
 export class UsersService {
   constructor(
@@ -16,54 +17,67 @@ export class UsersService {
 
   /**
    * Cria um novo usuário com senha criptografada.
+   * Valida unicidade de e-mail, CPF e CRM.
    * @param createUserDto Dados para criação do usuário
-   * @returns Usuário criado (sem passwordHash)
+   * @returns Usuário criado (campos públicos)
    */
-  async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
-    // Verifica se o e-mail já está cadastrado
-    const existingUser = await this.usersRepository.findOne({ where: { email: createUserDto.email } });
-    if (existingUser) {
-      throw new Error('E-mail já cadastrado.');
+  async create(createUserDto: CreateUserDto): Promise<Pick<User, 'id' | 'name' | 'email' | 'cpf' | 'crm' | 'createdAt' | 'updatedAt'>> {
+    // Verificar e-mail duplicado
+    const existingEmail = await this.usersRepository.findOne({ where: { email: createUserDto.email } });
+    if (existingEmail) {
+      throw new ConflictException('E-mail já cadastrado');
     }
 
-    // Verifica se o CRM já está cadastrado
+    // Verificar CPF duplicado
+    const existingCpf = await this.usersRepository.findOne({ where: { cpf: createUserDto.cpf } });
+    if (existingCpf) {
+      throw new ConflictException('CPF já cadastrado');
+    }
+
+    // Verificar CRM duplicado
     const existingCrm = await this.usersRepository.findOne({ where: { crm: createUserDto.crm } });
     if (existingCrm) {
-      throw new Error('CRM já cadastrado.');
+      throw new ConflictException('CRM já cadastrado');
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const hashedPassword = await bcrypt.hash(createUserDto.senha, 10);
     const user = this.usersRepository.create({
-      ...createUserDto,
+      name: createUserDto.nome,
+      email: createUserDto.email,
+      cpf: createUserDto.cpf,
+      crm: createUserDto.crm,
       passwordHash: hashedPassword,
     });
-    const savedUser = await this.usersRepository.save(user);
-    
-    // Remove passwordHash da resposta
-    const { passwordHash, ...userWithoutPassword } = savedUser;
-    return userWithoutPassword;
+
+    const saved = await this.usersRepository.save(user);
+    const { id, name, email, cpf, crm, createdAt, updatedAt } = saved;
+    return { id, name, email, cpf, crm, createdAt, updatedAt };
   }
 
   /**
    * Retorna todos os usuários cadastrados (campos públicos).
    * @returns Lista de usuários
    */
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find({
-      select: ['id', 'name', 'email', 'createdAt', 'updatedAt'],
+  async findAll(): Promise<Array<Pick<User, 'id' | 'name' | 'email' | 'cpf' | 'crm' | 'createdAt' | 'updatedAt'>>> {
+    const users = await this.usersRepository.find({
+      select: ['id', 'name', 'email', 'cpf', 'crm', 'createdAt', 'updatedAt'],
     });
+    return users.map(({ id, name, email, cpf, crm, createdAt, updatedAt }) => ({ id, name, email, cpf, crm, createdAt, updatedAt }));
   }
 
   /**
    * Busca um usuário pelo ID (campos públicos).
    * @param id ID do usuário
-   * @returns Usuário encontrado ou undefined
+   * @returns Usuário encontrado ou null
    */
-  async findOne(id: string): Promise<User> {
-    return this.usersRepository.findOne({
+  async findOne(id: string): Promise<Pick<User, 'id' | 'name' | 'email' | 'cpf' | 'crm' | 'createdAt' | 'updatedAt'>> {
+    const user = await this.usersRepository.findOne({
       where: { id },
-      select: ['id', 'name', 'email', 'createdAt', 'updatedAt'],
+      select: ['id', 'name', 'email', 'cpf', 'crm', 'createdAt', 'updatedAt'],
     });
+    if (!user) return null as any;
+    const { name, email, cpf, crm, createdAt, updatedAt } = user;
+    return { id, name, email, cpf, crm, createdAt, updatedAt };
   }
 
   /**

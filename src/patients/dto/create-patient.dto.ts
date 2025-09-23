@@ -2,6 +2,9 @@ import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsDateString, Length
 import { IsCpf } from '../../common/decorators/is-cpf.decorator';
 import { BloodType, PatientGender } from '../entities/patient.entity';
 
+/**
+ * DTO para criação de pacientes.
+ */
 export class CreatePatientDto {
   @IsString()
   @IsNotEmpty()

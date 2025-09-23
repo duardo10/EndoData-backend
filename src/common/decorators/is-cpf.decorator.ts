@@ -1,9 +1,15 @@
 import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator';
 
+/**
+ * Remove todos os caracteres não numéricos de uma string.
+ */
 function onlyDigits(value: string): string {
   return (value || '').replace(/\D/g, '');
 }
 
+/**
+ * Valida se um CPF é válido conforme dígitos verificadores.
+ */
 function isValidCpf(cpfRaw: string): boolean {
   const cpf = onlyDigits(cpfRaw);
   if (!cpf || cpf.length !== 11) return false;
@@ -26,6 +32,10 @@ function isValidCpf(cpfRaw: string): boolean {
   return cpf === baseNine + String(d1) + String(d2);
 }
 
+/**
+ * Decorator de validação para CPF.
+ * Exemplo: `@IsCpf({ message: 'CPF inválido' })`
+ */
 export function IsCpf(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({
@@ -47,6 +57,9 @@ export function IsCpf(validationOptions?: ValidationOptions) {
   };
 }
 
+/**
+ * Utilidades relacionadas ao CPF.
+ */
 export const CpfUtils = { onlyDigits, isValidCpf };
 
 
