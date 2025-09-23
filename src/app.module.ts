@@ -16,6 +16,8 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './users/entities/user.entity';
 import { Patient } from './patients/entities/patient.entity';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { MetabolicCalculation } from './metabolic/entities/metabolic-calculation.entity';
+import { MetabolicModule } from './metabolic/metabolic.module';
 
 /**
  * Módulo principal da aplicação.
@@ -31,7 +33,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
-        entities: [User, Patient],
+        entities: [User, Patient, MetabolicCalculation],
         synchronize: process.env.NODE_ENV === 'development', // Apenas em desenvolvimento
         logging: process.env.NODE_ENV === 'development',
         ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
@@ -41,6 +43,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     UsersModule,
     PatientsModule,
     AuthModule,
+    MetabolicModule,
   ],
   controllers: [AppController],
   providers: [
