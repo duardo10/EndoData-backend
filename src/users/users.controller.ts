@@ -16,8 +16,16 @@ import { CurrentUser, CurrentUserData } from '../auth/decorators/current-user.de
 @Controller('users')
 @ApiBearerAuth()
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  /**
+   * Controlador responsável pelas rotas de usuários.
+   * Expõe endpoints para criar, listar, buscar e remover usuários.
+   */
+  constructor(private readonly usersService: UsersService) {}
 
+  /**
+   * Cria um novo usuário.
+   * @param createUserDto Dados de criação do usuário
+   */
   @Post()
   @Public() // Rota pública para criação de usuários (registro)
   @HttpCode(HttpStatus.CREATED)
@@ -29,6 +37,9 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  /**
+   * Lista todos os usuários cadastrados.
+   */
   @Get()
   @ApiOperation({ summary: 'Listar todos os usuários' })
   @ApiResponse({ status: 200, description: 'Lista de usuários retornada com sucesso.' })
@@ -38,6 +49,10 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  /**
+   * Busca um usuário pelo seu ID.
+   * @param id ID do usuário
+   */
   @Get(':id')
   @ApiOperation({ summary: 'Buscar usuário por ID' })
   @ApiParam({ name: 'id', description: 'ID único do usuário' })
@@ -47,6 +62,10 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  /**
+   * Remove um usuário pelo seu ID.
+   * @param id ID do usuário
+   */
   @Delete(':id')
   @ApiOperation({ summary: 'Remover usuário por ID' })
   @ApiParam({ name: 'id', description: 'ID único do usuário' })

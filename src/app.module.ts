@@ -17,6 +17,10 @@ import { User } from './users/entities/user.entity';
 import { Patient } from './patients/entities/patient.entity';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
+/**
+ * Módulo principal da aplicação.
+ * Responsável por importar e configurar todos os módulos, serviços e entidades principais.
+ */
 @Module({
   imports: [
     ConfigModule.forRoot({
