@@ -18,8 +18,45 @@ export class PatientsService {
 
   /**
    * Cria um novo paciente com validações de unicidade.
-   * @param createPatientDto Dados para criação do paciente
-   * @returns Paciente criado
+   * 
+   * @description Esta função cria um novo paciente no sistema, realizando validações
+   * de unicidade para CPF, email e telefone. Também verifica se o usuário (médico)
+   * associado existe antes de criar o paciente.
+   * 
+   * @param {CreatePatientDto} createPatientDto - Dados para criação do paciente
+   * @param {string} createPatientDto.name - Nome completo do paciente
+   * @param {string} createPatientDto.cpf - CPF do paciente (será normalizado)
+   * @param {string} createPatientDto.birthDate - Data de nascimento (formato ISO)
+   * @param {PatientGender} createPatientDto.gender - Gênero do paciente
+   * @param {string} [createPatientDto.email] - Email do paciente (opcional)
+   * @param {string} [createPatientDto.phone] - Telefone do paciente (opcional)
+   * @param {string} [createPatientDto.neighborhood] - Bairro do paciente (opcional)
+   * @param {string} [createPatientDto.city] - Cidade do paciente (opcional)
+   * @param {string} [createPatientDto.state] - Estado do paciente (opcional)
+   * @param {string} [createPatientDto.weight] - Peso do paciente (opcional)
+   * @param {string} [createPatientDto.height] - Altura do paciente (opcional)
+   * @param {BloodType} [createPatientDto.bloodType] - Tipo sanguíneo (opcional)
+   * @param {string} [createPatientDto.medicalHistory] - Histórico médico (opcional)
+   * @param {string} [createPatientDto.allergies] - Alergias conhecidas (opcional)
+   * @param {string} createPatientDto.userId - ID do usuário/médico responsável
+   * 
+   * @returns {Promise<Patient>} Paciente criado com todos os dados
+   * 
+   * @throws {NotFoundException} Quando o usuário (médico) não é encontrado
+   * @throws {ConflictException} Quando CPF, email ou telefone já estão cadastrados
+   * 
+   * @example
+   * ```typescript
+   * const newPatient = await patientsService.create({
+   *   name: 'João Silva',
+   *   cpf: '123.456.789-00',
+   *   birthDate: '1990-01-01',
+   *   gender: PatientGender.MALE,
+   *   email: 'joao@email.com',
+   *   phone: '11999999999',
+   *   userId: 'uuid-do-medico'
+   * });
+   * ```
    */
   async create(createPatientDto: CreatePatientDto): Promise<Patient> {
     // Verificar se o usuário (médico) existe
@@ -76,7 +113,18 @@ export class PatientsService {
 
   /**
    * Retorna todos os pacientes ativos (não deletados).
-   * @returns Lista de pacientes
+   * 
+   * @description Esta função busca todos os pacientes que não foram deletados
+   * (soft delete), incluindo informações do médico responsável. Os dados são
+   * retornados com campos selecionados para otimizar a performance.
+   * 
+   * @returns {Promise<Patient[]>} Lista de todos os pacientes ativos
+   * 
+   * @example
+   * ```typescript
+   * const patients = await patientsService.findAll();
+   * console.log(`Encontrados ${patients.length} pacientes`);
+   * ```
    */
   async findAll(): Promise<Patient[]> {
     return this.patientsRepository.find({
@@ -108,8 +156,22 @@ export class PatientsService {
 
   /**
    * Busca um paciente pelo ID (apenas ativos).
-   * @param id ID do paciente
-   * @returns Paciente encontrado
+   * 
+   * @description Esta função busca um paciente específico pelo seu ID único,
+   * incluindo informações do médico responsável. Apenas pacientes não deletados
+   * são retornados (soft delete).
+   * 
+   * @param {string} id - ID único do paciente (UUID)
+   * 
+   * @returns {Promise<Patient>} Paciente encontrado com dados completos
+   * 
+   * @throws {NotFoundException} Quando o paciente não é encontrado
+   * 
+   * @example
+   * ```typescript
+   * const patient = await patientsService.findOne('uuid-do-paciente');
+   * console.log(`Paciente: ${patient.name}`);
+   * ```
    */
   async findOne(id: string): Promise<Patient> {
     const patient = await this.patientsRepository.findOne({
@@ -148,9 +210,41 @@ export class PatientsService {
 
   /**
    * Atualiza um paciente existente.
-   * @param id ID do paciente
-   * @param updatePatientDto Dados para atualização
-   * @returns Paciente atualizado
+   * 
+   * @description Esta função atualiza os dados de um paciente existente,
+   * realizando validações de unicidade para CPF, email e telefone. Apenas
+   * os campos fornecidos no DTO são atualizados (atualização parcial).
+   * 
+   * @param {string} id - ID único do paciente (UUID)
+   * @param {UpdatePatientDto} updatePatientDto - Dados para atualização
+   * @param {string} [updatePatientDto.name] - Nome completo do paciente (opcional)
+   * @param {string} [updatePatientDto.cpf] - CPF do paciente (opcional)
+   * @param {string} [updatePatientDto.birthDate] - Data de nascimento (opcional)
+   * @param {PatientGender} [updatePatientDto.gender] - Gênero do paciente (opcional)
+   * @param {string} [updatePatientDto.email] - Email do paciente (opcional)
+   * @param {string} [updatePatientDto.phone] - Telefone do paciente (opcional)
+   * @param {string} [updatePatientDto.neighborhood] - Bairro do paciente (opcional)
+   * @param {string} [updatePatientDto.city] - Cidade do paciente (opcional)
+   * @param {string} [updatePatientDto.state] - Estado do paciente (opcional)
+   * @param {string} [updatePatientDto.weight] - Peso do paciente (opcional)
+   * @param {string} [updatePatientDto.height] - Altura do paciente (opcional)
+   * @param {BloodType} [updatePatientDto.bloodType] - Tipo sanguíneo (opcional)
+   * @param {string} [updatePatientDto.medicalHistory] - Histórico médico (opcional)
+   * @param {string} [updatePatientDto.allergies] - Alergias conhecidas (opcional)
+   * @param {string} [updatePatientDto.userId] - ID do usuário/médico (opcional)
+   * 
+   * @returns {Promise<Patient>} Paciente atualizado com os novos dados
+   * 
+   * @throws {NotFoundException} Quando o paciente não é encontrado
+   * @throws {ConflictException} Quando CPF, email ou telefone já estão cadastrados para outro paciente
+   * 
+   * @example
+   * ```typescript
+   * const updatedPatient = await patientsService.update('uuid-do-paciente', {
+   *   name: 'João Silva Santos',
+   *   phone: '11988888888'
+   * });
+   * ```
    */
   async update(id: string, updatePatientDto: UpdatePatientDto): Promise<Patient> {
     const patient = await this.findOne(id);
@@ -196,7 +290,22 @@ export class PatientsService {
 
   /**
    * Remove um paciente (soft delete).
-   * @param id ID do paciente
+   * 
+   * @description Esta função remove um paciente do sistema utilizando soft delete,
+   * ou seja, o registro não é fisicamente removido do banco de dados, apenas
+   * marcado como deletado. O paciente pode ser restaurado posteriormente.
+   * 
+   * @param {string} id - ID único do paciente (UUID)
+   * 
+   * @returns {Promise<void>} Não retorna valor (void)
+   * 
+   * @throws {NotFoundException} Quando o paciente não é encontrado
+   * 
+   * @example
+   * ```typescript
+   * await patientsService.remove('uuid-do-paciente');
+   * console.log('Paciente removido com sucesso');
+   * ```
    */
   async remove(id: string): Promise<void> {
     const patient = await this.findOne(id);
@@ -205,8 +314,23 @@ export class PatientsService {
 
   /**
    * Restaura um paciente deletado.
-   * @param id ID do paciente
-   * @returns Paciente restaurado
+   * 
+   * @description Esta função restaura um paciente que foi removido via soft delete,
+   * tornando-o novamente ativo no sistema. Apenas pacientes que estão marcados
+   * como deletados podem ser restaurados.
+   * 
+   * @param {string} id - ID único do paciente (UUID)
+   * 
+   * @returns {Promise<Patient>} Paciente restaurado com dados completos
+   * 
+   * @throws {NotFoundException} Quando o paciente não é encontrado
+   * @throws {ConflictException} Quando o paciente não está deletado
+   * 
+   * @example
+   * ```typescript
+   * const restoredPatient = await patientsService.restore('uuid-do-paciente');
+   * console.log(`Paciente ${restoredPatient.name} restaurado com sucesso`);
+   * ```
    */
   async restore(id: string): Promise<Patient> {
     const patient = await this.patientsRepository.findOne({
@@ -228,8 +352,22 @@ export class PatientsService {
 
   /**
    * Busca pacientes por CPF.
-   * @param cpf CPF do paciente
-   * @returns Paciente encontrado
+   * 
+   * @description Esta função busca um paciente específico pelo seu CPF,
+   * incluindo informações do médico responsável. O CPF é normalizado
+   * (apenas dígitos) antes da busca. Apenas pacientes ativos são retornados.
+   * 
+   * @param {string} cpf - CPF do paciente (com ou sem formatação)
+   * 
+   * @returns {Promise<Patient>} Paciente encontrado com dados completos
+   * 
+   * @throws {NotFoundException} Quando o paciente não é encontrado
+   * 
+   * @example
+   * ```typescript
+   * const patient = await patientsService.findByCpf('123.456.789-00');
+   * console.log(`Paciente encontrado: ${patient.name}`);
+   * ```
    */
   async findByCpf(cpf: string): Promise<Patient> {
     const normalizedCpf = CpfUtils.onlyDigits(cpf);
@@ -247,8 +385,20 @@ export class PatientsService {
 
   /**
    * Busca pacientes por médico (user).
-   * @param userId ID do usuário/médico
-   * @returns Lista de pacientes do médico
+   * 
+   * @description Esta função busca todos os pacientes associados a um médico
+   * específico, incluindo informações do médico responsável. Apenas pacientes
+   * ativos são retornados (não deletados via soft delete).
+   * 
+   * @param {string} userId - ID único do usuário/médico (UUID)
+   * 
+   * @returns {Promise<Patient[]>} Lista de pacientes do médico
+   * 
+   * @example
+   * ```typescript
+   * const doctorPatients = await patientsService.findByUser('uuid-do-medico');
+   * console.log(`Médico possui ${doctorPatients.length} pacientes`);
+   * ```
    */
   async findByUser(userId: string): Promise<Patient[]> {
     return this.patientsRepository.find({
