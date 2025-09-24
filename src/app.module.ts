@@ -18,6 +18,9 @@ import { Patient } from './patients/entities/patient.entity';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { MetabolicCalculation } from './metabolic/entities/metabolic-calculation.entity';
 import { MetabolicModule } from './metabolic/metabolic.module';
+import { PrescriptionsModule } from './prescriptions/prescriptions.module';
+import { Prescription } from './prescriptions/entities/prescription.entity';
+import { PrescriptionMedication } from './prescriptions/entities/prescription-medication.entity';
 
 /**
  * Módulo principal da aplicação.
@@ -33,7 +36,7 @@ import { MetabolicModule } from './metabolic/metabolic.module';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
-        entities: [User, Patient, MetabolicCalculation],
+        entities: [User, Patient, MetabolicCalculation, Prescription, PrescriptionMedication],
         synchronize: process.env.NODE_ENV === 'development', // Apenas em desenvolvimento
         logging: process.env.NODE_ENV === 'development',
         ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
@@ -44,6 +47,7 @@ import { MetabolicModule } from './metabolic/metabolic.module';
     PatientsModule,
     AuthModule,
     MetabolicModule,
+    PrescriptionsModule,
   ],
   controllers: [AppController],
   providers: [
