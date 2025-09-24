@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between } from 'typeorm';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
-import { SearchPatientsDto } from './dto/search-patients.dto';
+import { SearchPatientsDto, SortField, SortOrder } from './dto/search-patients.dto';
 import { Patient } from './entities/patient.entity';
 import { User } from '../users/entities/user.entity';
 import { CpfUtils } from '../common/decorators/is-cpf.decorator';
@@ -434,20 +434,24 @@ export class PatientsService {
   }
 
   /**
-   * Busca pacientes com filtros avançados.
+   * Busca pacientes com filtros avançados, busca por texto livre e paginação.
    * 
    * @description Esta função permite buscar pacientes utilizando múltiplos filtros:
-   * nome (busca parcial), CPF (busca exata), idade (faixa etária) e gênero.
+   * busca por texto livre em nome e email, nome (busca parcial), CPF (busca exata), 
+   * idade (faixa etária), gênero e ordenação por nome, idade ou criação.
    * Suporta paginação e retorna informações do médico responsável.
    * 
    * @param {SearchPatientsDto} searchDto - Filtros de busca
-   * @param {string} [searchDto.name] - Nome do paciente (busca parcial)
+   * @param {string} [searchDto.searchText] - Busca por texto livre em nome e email
+   * @param {string} [searchDto.name] - Nome do paciente (busca parcial, usado quando searchText não é fornecido)
    * @param {string} [searchDto.cpf] - CPF do paciente (busca exata)
    * @param {number} [searchDto.minAge] - Idade mínima
    * @param {number} [searchDto.maxAge] - Idade máxima
    * @param {PatientGender} [searchDto.gender] - Gênero do paciente
    * @param {number} [searchDto.page] - Página (padrão: 1)
    * @param {number} [searchDto.limit] - Limite por página (padrão: 10)
+   * @param {SortField} [searchDto.sortBy] - Campo para ordenação (padrão: 'name')
+   * @param {SortOrder} [searchDto.sortOrder] - Direção da ordenação (padrão: 'ASC')
    * 
    * @returns {Promise<{patients: Patient[], total: number, page: number, limit: number}>} 
    * Resultado da busca com paginação
@@ -455,10 +459,12 @@ export class PatientsService {
    * @example
    * ```typescript
    * const result = await patientsService.search({
-   *   name: 'João',
+   *   searchText: 'João Silva',
    *   minAge: 18,
    *   maxAge: 65,
    *   gender: PatientGender.MALE,
+   *   sortBy: SortField.AGE,
+   *   sortOrder: SortOrder.DESC,
    *   page: 1,
    *   limit: 20
    * });
@@ -495,11 +501,21 @@ export class PatientsService {
         'user.especialidade',
       ]);
 
-    // Filtro por nome (busca parcial, case-insensitive)
-    if (searchDto.name) {
-      queryBuilder.andWhere('LOWER(patient.name) LIKE LOWER(:name)', {
-        name: `%${searchDto.name}%`,
-      });
+    // Filtro por texto livre (busca em nome e email)
+    if (searchDto.searchText) {
+      queryBuilder.andWhere(
+        '(LOWER(patient.name) LIKE LOWER(:searchText) OR LOWER(patient.email) LIKE LOWER(:searchText))',
+        {
+          searchText: `%${searchDto.searchText}%`,
+        },
+      );
+    } else {
+      // Filtro por nome específico (usado apenas quando searchText não é fornecido)
+      if (searchDto.name) {
+        queryBuilder.andWhere('LOWER(patient.name) LIKE LOWER(:name)', {
+          name: `%${searchDto.name}%`,
+        });
+      }
     }
 
     // Filtro por CPF (busca exata)
@@ -547,8 +563,24 @@ export class PatientsService {
 
     queryBuilder.skip(skip).take(limit);
 
-    // Ordenação por nome
-    queryBuilder.orderBy('patient.name', 'ASC');
+    // Ordenação dinâmica
+    const sortBy = searchDto.sortBy || SortField.NAME;
+    const sortOrder = searchDto.sortOrder || SortOrder.ASC;
+
+    switch (sortBy) {
+      case SortField.NAME:
+        queryBuilder.orderBy('patient.name', sortOrder);
+        break;
+      case SortField.AGE:
+        // Ordenação por idade (mais recente = mais jovem)
+        queryBuilder.orderBy('patient.birthDate', sortOrder === SortOrder.ASC ? 'DESC' : 'ASC');
+        break;
+      case SortField.CREATED_AT:
+        queryBuilder.orderBy('patient.createdAt', sortOrder);
+        break;
+      default:
+        queryBuilder.orderBy('patient.name', SortOrder.ASC);
+    }
 
     // Executar query
     const [patients, total] = await queryBuilder.getManyAndCount();

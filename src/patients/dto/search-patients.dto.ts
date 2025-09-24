@@ -2,13 +2,34 @@ import { IsOptional, IsString, IsEnum, IsNumber, Min, Max } from 'class-validato
 import { Transform } from 'class-transformer';
 import { PatientGender } from '../entities/patient.entity';
 
+export enum SortField {
+  NAME = 'name',
+  AGE = 'age',
+  CREATED_AT = 'createdAt',
+}
+
+export enum SortOrder {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 /**
  * DTO para filtros de busca de pacientes.
- * Permite filtrar pacientes por nome, CPF, idade e gênero.
+ * Permite filtrar pacientes por nome, CPF, idade, gênero, busca por texto livre e ordenação.
  */
 export class SearchPatientsDto {
   /**
+   * Busca por texto livre em nome e email (busca parcial, case-insensitive).
+   * Este campo substitui os filtros específicos de nome e email quando fornecido.
+   */
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => value?.trim())
+  searchText?: string;
+
+  /**
    * Nome do paciente (busca parcial, case-insensitive).
+   * Usado apenas quando searchText não é fornecido.
    */
   @IsOptional()
   @IsString()
@@ -68,4 +89,18 @@ export class SearchPatientsDto {
   @Max(100)
   @Transform(({ value }) => parseInt(value) || 10)
   limit?: number = 10;
+
+  /**
+   * Campo para ordenação (opcional).
+   */
+  @IsOptional()
+  @IsEnum(SortField)
+  sortBy?: SortField = SortField.NAME;
+
+  /**
+   * Direção da ordenação (opcional).
+   */
+  @IsOptional()
+  @IsEnum(SortOrder)
+  sortOrder?: SortOrder = SortOrder.ASC;
 }
