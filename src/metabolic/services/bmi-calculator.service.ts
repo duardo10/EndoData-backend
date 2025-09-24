@@ -1,7 +1,16 @@
 import { Injectable } from '@nestjs/common';
 
+/**
+ * Serviço responsável pelo cálculo do IMC (Índice de Massa Corporal) e sua classificação.
+ */
 @Injectable()
 export class BMICalculatorService {
+  /**
+   * Calcula o IMC e retorna o valor junto com a classificação.
+   * @param weight Peso em kg
+   * @param height Altura em metros
+   * @returns Objeto com o IMC e a classificação
+   */
   calculate(weight: number, height: number) {
     const bmi = weight / (height * height);
     let classification = '';

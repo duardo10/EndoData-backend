@@ -10,8 +10,11 @@ import { BMRCalculatorService } from './services/bmr-calculator.service';
 import { CalculationType } from './enums/calculation-type.enum';
 
 /**
- * Serviço responsável pela orquestração de persistência e leitura de cálculos metabólicos.
- * Não implementa a lógica matemática dos cálculos (IMC/BMR/TDEE) nesta etapa.
+ * Serviço responsável pela orquestração de persistência, leitura e execução dos cálculos metabólicos (IMC, BMR, TDEE).
+ * - Persiste registros de cálculos realizados para pacientes.
+ * - Realiza cálculos de IMC (com classificação), Taxa Metabólica Basal (Harris-Benedict) e Gasto Energético Total.
+ * - Utiliza serviços especializados para cada tipo de cálculo.
+ * - Permite consultar o histórico de cálculos de um paciente.
  */
 @Injectable()
 export class MetabolicService {
@@ -26,7 +29,15 @@ export class MetabolicService {
     private readonly bmrCalculator: BMRCalculatorService,
   ) {}
 
-  /** Cria um cálculo para um paciente específico, associando o usuário executor. */
+  /**
+   * Cria um cálculo para um paciente específico, associando o usuário executor.
+   * Persiste o tipo de cálculo, dados de entrada e resultado.
+   * @param patientId UUID do paciente
+   * @param dto DTO contendo tipo, dados e usuário
+   * @param userId UUID do usuário executor
+   * @returns Registro de cálculo persistido
+   */
+  
   async createForPatient(patientId: string, dto: CreateCalculationDto, userId: string) {
     const patient = await this.patientRepo.findOne({ where: { id: patientId } });
     if (!patient) {
@@ -48,7 +59,12 @@ export class MetabolicService {
     return await this.calculationRepo.save(entity);
   }
 
-  /** Lista cálculos de um paciente em ordem decrescente de criação. */
+  /**
+   * Lista cálculos de um paciente em ordem decrescente de criação.
+   * @param patientId UUID do paciente
+   * @returns Array de registros de cálculos
+   */
+
   async listByPatient(patientId: string) {
     const patient = await this.patientRepo.findOne({ where: { id: patientId } });
     if (!patient) {
@@ -60,6 +76,15 @@ export class MetabolicService {
       order: { createdAt: 'DESC' },
     });
   }
+
+  /**
+   * Realiza o cálculo metabólico solicitado (IMC, BMR, TDEE) e persiste o resultado.
+   * Utiliza os serviços especializados para cada tipo de cálculo.
+   * @param tipo Tipo de cálculo (BMI, BMR, TDEE)
+   * @param patientId UUID do paciente
+   * @param dados Dados de entrada necessários para o cálculo
+   * @returns Registro de cálculo persistido com resultado
+   */
 
   async calculate(tipo: CalculationType, patientId: string, dados: Record<string, any>) {
     const patient = await this.patientRepo.findOne({ where: { id: patientId } });
