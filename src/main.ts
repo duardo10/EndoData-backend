@@ -47,10 +47,26 @@ async function bootstrap() {
     .setDescription('API para gerenciamento de dados endocrinológicos')
     .setVersion('1.0')
     .addTag('users', 'Operações relacionadas aos usuários')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description:
+          'Insira o token JWT no formato: Bearer <seu_token>',
+        name: 'Authorization',
+        in: 'header',
+      },
+      'bearer',
+    )
     .build();
   
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

@@ -8,10 +8,13 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
+import { SearchPatientsDto } from './dto/search-patients.dto';
 
 /**
  * Controller responsável por gerenciar as rotas relacionadas a pacientes.
@@ -19,12 +22,35 @@ import { UpdatePatientDto } from './dto/update-patient.dto';
  * Cada método está devidamente documentado para facilitar o entendimento e manutenção.
  */
 @Controller('patients')
+@ApiBearerAuth('bearer')
 export class PatientsController {
   /**
    * Injeta o serviço de pacientes, responsável pela lógica de negócio.
    * @param patientsService Instância de PatientsService
    */
   constructor(private readonly patientsService: PatientsService) {}
+
+  /**
+   * Verifica se há parâmetros de busca fornecidos.
+   * @param searchDto Objeto com parâmetros de busca.
+   * @returns true se há pelo menos um parâmetro de busca fornecido.
+   */
+  private hasSearchParams(searchDto?: SearchPatientsDto): boolean {
+    if (!searchDto) return false;
+    
+    return !!(
+      searchDto.searchText ||
+      searchDto.name ||
+      searchDto.cpf ||
+      searchDto.minAge !== undefined ||
+      searchDto.maxAge !== undefined ||
+      searchDto.gender ||
+      searchDto.sortBy ||
+      searchDto.sortOrder ||
+      (searchDto.page !== undefined && searchDto.page !== 1) ||
+      (searchDto.limit !== undefined && searchDto.limit !== 10)
+    );
+  }
 
   /**
    * Cria um novo paciente no sistema.
@@ -37,12 +63,34 @@ export class PatientsController {
   }
 
   /**
-   * Lista todos os pacientes ativos cadastrados no sistema.
-   * @returns Um array de objetos Patient representando todos os pacientes ativos.
+   * Lista pacientes com filtros opcionais e paginação.
+   * 
+   * @description Endpoint unificado que pode ser usado de duas formas:
+   * 1. Sem parâmetros: retorna todos os pacientes ativos
+   * 2. Com query parameters: aplica filtros, ordenação e paginação
+   * 
+   * @param searchDto Filtros opcionais de busca (nome, CPF, idade, gênero, busca por texto livre, ordenação e paginação).
+   * @returns Lista de pacientes com ou sem filtros aplicados.
    */
   @Get()
-  findAll() {
-    return this.patientsService.findAll();
+  findAll(@Query() searchDto?: SearchPatientsDto) {
+    // Se não há parâmetros de busca, usa o método simples
+    if (!this.hasSearchParams(searchDto)) {
+      return this.patientsService.findAll();
+    }
+    
+    // Se há parâmetros de busca, usa o método avançado
+    return this.patientsService.search(searchDto);
+  }
+
+  /**
+   * Busca pacientes com filtros avançados.
+   * @param searchDto Filtros de busca (nome, CPF, idade, gênero) e paginação.
+   * @returns Resultado da busca com paginação, incluindo total de registros.
+   */
+  @Get('search')
+  search(@Query() searchDto: SearchPatientsDto) {
+    return this.patientsService.search(searchDto);
   }
 
   /**
