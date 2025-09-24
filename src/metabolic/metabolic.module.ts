@@ -5,6 +5,8 @@ import { MetabolicService } from './metabolic.service';
 import { MetabolicController } from './metabolic.controller';
 import { Patient } from '../patients/entities/patient.entity';
 import { User } from '../users/entities/user.entity';
+import { BMICalculatorService } from './services/bmi-calculator.service';
+import { BMRCalculatorService } from './services/bmr-calculator.service';
 
 /**
  * Módulo responsável por operações de persistência e exposição de endpoints
@@ -13,7 +15,7 @@ import { User } from '../users/entities/user.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([MetabolicCalculation, Patient, User])],
   controllers: [MetabolicController],
-  providers: [MetabolicService],
+  providers: [MetabolicService, BMICalculatorService, BMRCalculatorService],
   exports: [MetabolicService],
 })
 export class MetabolicModule {}
