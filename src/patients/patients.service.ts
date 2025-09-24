@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like, Between } from 'typeorm';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
+import { SearchPatientsDto } from './dto/search-patients.dto';
 import { Patient } from './entities/patient.entity';
 import { User } from '../users/entities/user.entity';
 import { CpfUtils } from '../common/decorators/is-cpf.decorator';
@@ -430,5 +431,133 @@ export class PatientsService {
         },
       },
     });
+  }
+
+  /**
+   * Busca pacientes com filtros avançados.
+   * 
+   * @description Esta função permite buscar pacientes utilizando múltiplos filtros:
+   * nome (busca parcial), CPF (busca exata), idade (faixa etária) e gênero.
+   * Suporta paginação e retorna informações do médico responsável.
+   * 
+   * @param {SearchPatientsDto} searchDto - Filtros de busca
+   * @param {string} [searchDto.name] - Nome do paciente (busca parcial)
+   * @param {string} [searchDto.cpf] - CPF do paciente (busca exata)
+   * @param {number} [searchDto.minAge] - Idade mínima
+   * @param {number} [searchDto.maxAge] - Idade máxima
+   * @param {PatientGender} [searchDto.gender] - Gênero do paciente
+   * @param {number} [searchDto.page] - Página (padrão: 1)
+   * @param {number} [searchDto.limit] - Limite por página (padrão: 10)
+   * 
+   * @returns {Promise<{patients: Patient[], total: number, page: number, limit: number}>} 
+   * Resultado da busca com paginação
+   * 
+   * @example
+   * ```typescript
+   * const result = await patientsService.search({
+   *   name: 'João',
+   *   minAge: 18,
+   *   maxAge: 65,
+   *   gender: PatientGender.MALE,
+   *   page: 1,
+   *   limit: 20
+   * });
+   * console.log(`Encontrados ${result.total} pacientes`);
+   * ```
+   */
+  async search(searchDto: SearchPatientsDto): Promise<{
+    patients: Patient[];
+    total: number;
+    page: number;
+    limit: number;
+  }> {
+    const queryBuilder = this.patientsRepository
+      .createQueryBuilder('patient')
+      .leftJoinAndSelect('patient.user', 'user')
+      .select([
+        'patient.id',
+        'patient.name',
+        'patient.cpf',
+        'patient.birthDate',
+        'patient.gender',
+        'patient.email',
+        'patient.phone',
+        'patient.weight',
+        'patient.height',
+        'patient.bloodType',
+        'patient.medicalHistory',
+        'patient.allergies',
+        'patient.createdAt',
+        'patient.updatedAt',
+        'user.id',
+        'user.name',
+        'user.crm',
+        'user.especialidade',
+      ]);
+
+    // Filtro por nome (busca parcial, case-insensitive)
+    if (searchDto.name) {
+      queryBuilder.andWhere('LOWER(patient.name) LIKE LOWER(:name)', {
+        name: `%${searchDto.name}%`,
+      });
+    }
+
+    // Filtro por CPF (busca exata)
+    if (searchDto.cpf) {
+      const normalizedCpf = CpfUtils.onlyDigits(searchDto.cpf);
+      queryBuilder.andWhere('patient.cpf = :cpf', { cpf: normalizedCpf });
+    }
+
+    // Filtro por idade (calculada a partir da data de nascimento)
+    if (searchDto.minAge !== undefined || searchDto.maxAge !== undefined) {
+      const today = new Date();
+      
+      if (searchDto.minAge !== undefined) {
+        const maxBirthDate = new Date(
+          today.getFullYear() - searchDto.minAge,
+          today.getMonth(),
+          today.getDate()
+        );
+        queryBuilder.andWhere('patient.birthDate <= :maxBirthDate', {
+          maxBirthDate: maxBirthDate.toISOString().split('T')[0],
+        });
+      }
+
+      if (searchDto.maxAge !== undefined) {
+        const minBirthDate = new Date(
+          today.getFullYear() - searchDto.maxAge - 1,
+          today.getMonth(),
+          today.getDate()
+        );
+        queryBuilder.andWhere('patient.birthDate >= :minBirthDate', {
+          minBirthDate: minBirthDate.toISOString().split('T')[0],
+        });
+      }
+    }
+
+    // Filtro por gênero
+    if (searchDto.gender) {
+      queryBuilder.andWhere('patient.gender = :gender', { gender: searchDto.gender });
+    }
+
+    // Paginação
+    const page = searchDto.page || 1;
+    const limit = searchDto.limit || 10;
+    const skip = (page - 1) * limit;
+
+    queryBuilder.skip(skip).take(limit);
+
+    // Ordenação por nome
+    queryBuilder.orderBy('patient.name', 'ASC');
+
+    // Executar query
+    const [patients, total] = await queryBuilder.getManyAndCount();
+
+    return {
+      patients,
+      total,
+      page,
+      limit,
+    };
   }
 }

@@ -8,10 +8,12 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
+import { SearchPatientsDto } from './dto/search-patients.dto';
 
 /**
  * Controller responsável por gerenciar as rotas relacionadas a pacientes.
@@ -43,6 +45,16 @@ export class PatientsController {
   @Get()
   findAll() {
     return this.patientsService.findAll();
+  }
+
+  /**
+   * Busca pacientes com filtros avançados.
+   * @param searchDto Filtros de busca (nome, CPF, idade, gênero) e paginação.
+   * @returns Resultado da busca com paginação, incluindo total de registros.
+   */
+  @Get('search')
+  search(@Query() searchDto: SearchPatientsDto) {
+    return this.patientsService.search(searchDto);
   }
 
   /**
