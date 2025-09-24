@@ -29,6 +29,28 @@ export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
 
   /**
+   * Verifica se há parâmetros de busca fornecidos.
+   * @param searchDto Objeto com parâmetros de busca.
+   * @returns true se há pelo menos um parâmetro de busca fornecido.
+   */
+  private hasSearchParams(searchDto?: SearchPatientsDto): boolean {
+    if (!searchDto) return false;
+    
+    return !!(
+      searchDto.searchText ||
+      searchDto.name ||
+      searchDto.cpf ||
+      searchDto.minAge !== undefined ||
+      searchDto.maxAge !== undefined ||
+      searchDto.gender ||
+      searchDto.sortBy ||
+      searchDto.sortOrder ||
+      (searchDto.page !== undefined && searchDto.page !== 1) ||
+      (searchDto.limit !== undefined && searchDto.limit !== 10)
+    );
+  }
+
+  /**
    * Cria um novo paciente no sistema.
    * @param createPatientDto Objeto contendo os dados necessários para criação do paciente.
    * @returns O paciente criado, incluindo seu ID e demais informações persistidas.
@@ -39,12 +61,24 @@ export class PatientsController {
   }
 
   /**
-   * Lista todos os pacientes ativos cadastrados no sistema.
-   * @returns Um array de objetos Patient representando todos os pacientes ativos.
+   * Lista pacientes com filtros opcionais e paginação.
+   * 
+   * @description Endpoint unificado que pode ser usado de duas formas:
+   * 1. Sem parâmetros: retorna todos os pacientes ativos
+   * 2. Com query parameters: aplica filtros, ordenação e paginação
+   * 
+   * @param searchDto Filtros opcionais de busca (nome, CPF, idade, gênero, busca por texto livre, ordenação e paginação).
+   * @returns Lista de pacientes com ou sem filtros aplicados.
    */
   @Get()
-  findAll() {
-    return this.patientsService.findAll();
+  findAll(@Query() searchDto?: SearchPatientsDto) {
+    // Se não há parâmetros de busca, usa o método simples
+    if (!this.hasSearchParams(searchDto)) {
+      return this.patientsService.findAll();
+    }
+    
+    // Se há parâmetros de busca, usa o método avançado
+    return this.patientsService.search(searchDto);
   }
 
   /**

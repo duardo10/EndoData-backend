@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Public } from './auth/decorators/public.decorator';
 
 /**
  * Controller principal da aplicação.
@@ -22,6 +23,7 @@ export class AppController {
    * Endpoint de verificação de saúde da aplicação.
    * @returns Status, timestamp e uptime
    */
+  @Public()
   @Get('health')
   getHealth() {
     return {

@@ -2,9 +2,15 @@
 
 Este documento apresenta exemplos de uso do sistema de busca de pacientes implementado no EndoData.
 
-## Endpoint de Busca
+## Endpoints de Busca
 
+### Endpoint Principal (Recomendado)
+**GET** `/patients`
+
+### Endpoint Alternativo
 **GET** `/patients/search`
+
+> **Nota**: Ambos os endpoints oferecem as mesmas funcionalidades. O endpoint `/patients` é o principal e mais intuitivo, enquanto `/patients/search` é mantido para compatibilidade.
 
 ## Parâmetros de Busca
 
@@ -23,60 +29,67 @@ Este documento apresenta exemplos de uso do sistema de busca de pacientes implem
 
 ## Exemplos de Uso
 
-### 1. Busca por texto livre (nome e email)
+### 1. Listar todos os pacientes (sem filtros)
 ```bash
-GET /patients/search?searchText=João Silva
+GET /patients
 ```
 
-### 2. Buscar por nome específico
+### 2. Busca por texto livre (nome e email)
 ```bash
-GET /patients/search?name=João
+GET /patients?searchText=João Silva
 ```
 
-### 3. Buscar por CPF
+### 3. Buscar por nome específico
 ```bash
-GET /patients/search?cpf=12345678900
+GET /patients?name=João
 ```
 
-### 4. Buscar por faixa etária
+### 4. Buscar por CPF
 ```bash
-GET /patients/search?minAge=18&maxAge=65
+GET /patients?cpf=12345678900
 ```
 
-### 5. Buscar por gênero
+### 5. Buscar por faixa etária
 ```bash
-GET /patients/search?gender=male
+GET /patients?minAge=18&maxAge=65
 ```
 
-### 6. Ordenação por nome (padrão)
+### 6. Buscar por gênero
 ```bash
-GET /patients/search?sortBy=name&sortOrder=ASC
+GET /patients?gender=male
 ```
 
-### 7. Ordenação por idade (mais jovens primeiro)
+### 7. Ordenação por nome (padrão)
 ```bash
-GET /patients/search?sortBy=age&sortOrder=ASC
+GET /patients?sortBy=name&sortOrder=ASC
 ```
 
-### 8. Ordenação por data de criação (mais recentes primeiro)
+### 8. Ordenação por idade (mais jovens primeiro)
 ```bash
-GET /patients/search?sortBy=createdAt&sortOrder=DESC
+GET /patients?sortBy=age&sortOrder=ASC
 ```
 
-### 9. Busca combinada com ordenação
+### 9. Ordenação por data de criação (mais recentes primeiro)
 ```bash
-GET /patients/search?searchText=João&minAge=18&maxAge=65&gender=male&sortBy=age&sortOrder=DESC
+GET /patients?sortBy=createdAt&sortOrder=DESC
 ```
 
-### 10. Busca com paginação
+### 10. Busca combinada com ordenação
 ```bash
-GET /patients/search?page=2&limit=20
+GET /patients?searchText=João&minAge=18&maxAge=65&gender=male&sortBy=age&sortOrder=DESC
 ```
 
-### 11. Busca completa com todas as opções
+### 11. Busca com paginação
 ```bash
-GET /patients/search?searchText=João&cpf=12345678900&minAge=18&maxAge=65&gender=male&sortBy=createdAt&sortOrder=DESC&page=1&limit=10
+GET /patients?page=2&limit=20
 ```
+
+### 12. Busca completa com todas as opções
+```bash
+GET /patients?searchText=João&cpf=12345678900&minAge=18&maxAge=65&gender=male&sortBy=createdAt&sortOrder=DESC&page=1&limit=10
+```
+
+> **Compatibilidade**: Todos os exemplos acima também funcionam com `/patients/search` no lugar de `/patients`.
 
 ## Resposta da API
 
@@ -111,6 +124,26 @@ GET /patients/search?searchText=João&cpf=12345678900&minAge=18&maxAge=65&gender
   "limit": 10
 }
 ```
+
+## Comportamento Inteligente do Endpoint
+
+O endpoint `GET /patients` é **inteligente** e detecta automaticamente como deve se comportar:
+
+### Sem Query Parameters
+```bash
+GET /patients
+```
+- **Comportamento**: Lista todos os pacientes ativos
+- **Resposta**: Array simples de pacientes
+- **Performance**: Otimizada para listagem completa
+
+### Com Query Parameters
+```bash
+GET /patients?searchText=João&sortBy=name
+```
+- **Comportamento**: Aplica filtros, ordenação e paginação
+- **Resposta**: Objeto com `patients`, `total`, `page`, `limit`
+- **Performance**: Otimizada para busca específica
 
 ## Características da Busca
 
