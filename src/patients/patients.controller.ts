@@ -10,6 +10,7 @@ import {
   HttpStatus,
   Query,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
@@ -21,6 +22,7 @@ import { SearchPatientsDto } from './dto/search-patients.dto';
  * Cada método está devidamente documentado para facilitar o entendimento e manutenção.
  */
 @Controller('patients')
+@ApiBearerAuth('bearer')
 export class PatientsController {
   /**
    * Injeta o serviço de pacientes, responsável pela lógica de negócio.

@@ -14,7 +14,7 @@ import { CurrentUser, CurrentUserData } from '../auth/decorators/current-user.de
 
 @ApiTags('users')
 @Controller('users')
-@ApiBearerAuth()
+@ApiBearerAuth('bearer')
 export class UsersController {
   /**
    * Controlador responsável pelas rotas de usuários.
