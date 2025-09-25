@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { MetabolicService } from './metabolic.service';
 import { CreateCalculationDto } from './dto/create-calculation.dto';
 import { CurrentUser, CurrentUserData } from '../auth/decorators/current-user.decorator';
@@ -45,6 +45,38 @@ export class MetabolicController {
     description: 'Identificador único do paciente',
     type: 'string',
     format: 'uuid'
+  })
+  @ApiBody({
+    description: 'Exemplos de body para cálculos metabólicos',
+    examples: {
+      bmi: {
+        summary: 'IMC',
+        value: {
+          patientId: 'uuid-do-paciente',
+          userId: 'uuid-do-usuario',
+          calculationType: 'BMI',
+          inputData: { weight: 70, height: 1.75 }
+        }
+      },
+      bmr: {
+        summary: 'BMR',
+        value: {
+          patientId: 'uuid-do-paciente',
+          userId: 'uuid-do-usuario',
+          calculationType: 'BMR',
+          inputData: { weight: 70, height: 1.75, age: 30, sex: 'M' }
+        }
+      },
+      tdee: {
+        summary: 'TDEE',
+        value: {
+          patientId: 'uuid-do-paciente',
+          userId: 'uuid-do-usuario',
+          calculationType: 'TDEE',
+          inputData: { weight: 70, height: 1.75, age: 30, sex: 'M', activityLevel: 1.55 }
+        }
+      }
+    }
   })
   @ApiResponse({ 
     status: 201, 
