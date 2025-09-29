@@ -1,5 +1,5 @@
 /**
- * @file Define o DTO para a criação de um novo recibo.
+ * Define o DTO para a criação de um novo recibo.
  */
 
 import { IsUUID, IsArray, ValidateNested, IsOptional, IsEnum } from 'class-validator';

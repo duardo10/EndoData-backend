@@ -1,5 +1,5 @@
 /**
- * @file Define o DTO para a criação de um item de recibo.
+ * Define o DTO para a criação de um item de recibo.
  */
 
 import { IsString, IsNumber, IsPositive, MinLength } from 'class-validator';

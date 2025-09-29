@@ -1,5 +1,5 @@
 /**
- * @file Define o enum para o status do recibo.
+ * Define o enum para o status do recibo.
  */
 
 /**

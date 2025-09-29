@@ -1,5 +1,5 @@
 /**
- * @file Define a entidade ReceiptItem para o banco de dados.
+ * Define a entidade ReceiptItem para o banco de dados.
  */
 
 import {
