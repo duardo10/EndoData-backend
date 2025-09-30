@@ -23,6 +23,22 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   /**
+   * Retorna o perfil do usuário autenticado (médico).
+   *
+   * Usa o decorator `CurrentUser` para extrair os dados do token JWT
+   * e retornar informações básicas do médico logado.
+   *
+   * @returns Dados do médico autenticado
+   */
+  @Get('profile')
+  @ApiOperation({ summary: 'Obter perfil do usuário autenticado' })
+  @ApiResponse({ status: 200, description: 'Perfil retornado com sucesso.' })
+  @ApiResponse({ status: 401, description: 'Não autorizado.' })
+  getProfile(@CurrentUser() user: CurrentUserData) {
+    return user;
+  }
+
+  /**
    * Cria um novo usuário.
    * @param createUserDto Dados de criação do usuário
    */

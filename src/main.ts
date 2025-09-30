@@ -47,6 +47,7 @@ async function bootstrap() {
     .setDescription('API para gerenciamento de dados endocrinológicos')
     .setVersion('1.0')
     .addTag('users', 'Operações relacionadas aos usuários')
+    .addTag('dashboard', 'Estatísticas e dados da tela inicial')
     .addBearerAuth(
       {
         type: 'http',

@@ -24,6 +24,7 @@ import { PrescriptionMedication } from './prescriptions/entities/prescription-me
 import { ReceiptsModule } from './receipts/receipts.module';
 import { Receipt } from './receipts/entities/receipt.entity';
 import { ReceiptItem } from './receipts/entities/receipt-item.entity';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 /**
  * Módulo principal da aplicação.
@@ -52,6 +53,7 @@ import { ReceiptItem } from './receipts/entities/receipt-item.entity';
     MetabolicModule,
     PrescriptionsModule,
     ReceiptsModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [
