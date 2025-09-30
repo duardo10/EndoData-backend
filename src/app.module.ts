@@ -21,6 +21,9 @@ import { MetabolicModule } from './metabolic/metabolic.module';
 import { PrescriptionsModule } from './prescriptions/prescriptions.module';
 import { Prescription } from './prescriptions/entities/prescription.entity';
 import { PrescriptionMedication } from './prescriptions/entities/prescription-medication.entity';
+import { ReceiptsModule } from './receipts/receipts.module';
+import { Receipt } from './receipts/entities/receipt.entity';
+import { ReceiptItem } from './receipts/entities/receipt-item.entity';
 
 /**
  * Módulo principal da aplicação.
@@ -36,7 +39,7 @@ import { PrescriptionMedication } from './prescriptions/entities/prescription-me
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
-        entities: [User, Patient, MetabolicCalculation, Prescription, PrescriptionMedication],
+        entities: [User, Patient, MetabolicCalculation, Prescription, PrescriptionMedication, Receipt, ReceiptItem],
         synchronize: process.env.NODE_ENV === 'development', // Apenas em desenvolvimento
         logging: process.env.NODE_ENV === 'development',
         ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
@@ -48,6 +51,7 @@ import { PrescriptionMedication } from './prescriptions/entities/prescription-me
     AuthModule,
     MetabolicModule,
     PrescriptionsModule,
+    ReceiptsModule,
   ],
   controllers: [AppController],
   providers: [
