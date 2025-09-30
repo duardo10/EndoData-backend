@@ -1,5 +1,4 @@
 services:
-  # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
     container_name: postgres_db
@@ -16,7 +15,6 @@ services:
     networks:
       - app-network
 
-  # NestJS Backend API
   backend:
     build: 
       context: .
@@ -31,15 +29,9 @@ services:
       - "3000:3000"
     depends_on:
       - postgres
-    volumes:
-      - ./src:/app/src
-      - ./package.json:/app/package.json
-      - ./tsconfig.json:/app/tsconfig.json
-      - /app/node_modules
     networks:
       - app-network
 
-  # pgAdmin - Interface web para PostgreSQL
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin_web
@@ -60,7 +52,6 @@ services:
 volumes:
   postgres_data:
   pgadmin_data:
-  node_modules_volume:
 
 networks:
   app-network:
