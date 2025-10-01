@@ -7,6 +7,8 @@ import { SearchPatientsDto, SortField, SortOrder } from './dto/search-patients.d
 import { Patient } from './entities/patient.entity';
 import { User } from '../users/entities/user.entity';
 import { CpfUtils } from '../common/decorators/is-cpf.decorator';
+import { MetabolicCalculation } from '../metabolic/entities/metabolic-calculation.entity';
+import { Prescription } from '../prescriptions/entities/prescription.entity';
 
 @Injectable()
 export class PatientsService {
@@ -18,6 +20,10 @@ export class PatientsService {
     private patientsRepository: Repository<Patient>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(MetabolicCalculation)
+    private calculationsRepository: Repository<MetabolicCalculation>,
+    @InjectRepository(Prescription)
+    private prescriptionsRepository: Repository<Prescription>,
   ) {}
 
   /**
@@ -591,5 +597,40 @@ export class PatientsService {
       page,
       limit,
     };
+  }
+
+  /**
+   * Retorna a visão completa do paciente: dados básicos + usuário, cálculos e prescrições com medicamentos.
+   * Limite de no máximo 3 queries ao banco.
+   */
+  async findComplete(id: string): Promise<{
+    patient: Patient;
+    calculations: MetabolicCalculation[];
+    prescriptions: Prescription[];
+  }> {
+    // Query 1: paciente com usuário
+    const patient = await this.patientsRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!patient) {
+      throw new NotFoundException('Paciente não encontrado.');
+    }
+
+    // Query 2: cálculos do paciente (ordem decrescente)
+    const calculations = await this.calculationsRepository.find({
+      where: { patient: { id } },
+      order: { createdAt: 'DESC' },
+    });
+
+    // Query 3: prescrições do paciente com medicamentos em uma única consulta
+    const prescriptions = await this.prescriptionsRepository
+      .createQueryBuilder('prescription')
+      .leftJoinAndSelect('prescription.medications', 'medication')
+      .where('prescription.patient = :patientId', { patientId: id })
+      .orderBy('prescription.createdAt', 'DESC')
+      .getMany();
+
+    return { patient, calculations, prescriptions };
   }
 }
