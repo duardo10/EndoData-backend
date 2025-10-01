@@ -102,6 +102,14 @@ export class PatientsController {
   }
 
   /**
+   * Retorna detalhes completos do paciente: dados, cálculos e prescrições.
+   */
+  @Get(':id/complete')
+  findComplete(@Param('id') id: string) {
+    return this.patientsService.findComplete(id);
+  }
+
+  /**
    * Busca um paciente pelo seu CPF.
    * @param cpf CPF do paciente (apenas números ou formatado).
    * @returns O paciente correspondente ao CPF informado, caso exista.
