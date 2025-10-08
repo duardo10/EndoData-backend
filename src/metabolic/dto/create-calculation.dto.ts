@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsObject, IsUUID } from 'class-validator';
+import { IsEnum, IsObject } from 'class-validator';
 import { CalculationType } from '../enums/calculation-type.enum';
 
 /**
@@ -11,31 +11,6 @@ import { CalculationType } from '../enums/calculation-type.enum';
  * @class CreateCalculationDto
  */
 export class CreateCalculationDto {
-  /**
-   * Identificador único do paciente alvo do cálculo.
-   * Deve ser um UUID válido de um paciente existente.
-   * 
-   * @type {string}
-   * @required
-   * @format uuid
-   * @example "123e4567-e89b-12d3-a456-426614174000"
-   */
-  @IsUUID()
-  @IsNotEmpty()
-  patientId: string;
-
-  /**
-   * Identificador único do usuário que executa o cálculo.
-   * Pode ser sobreescrito pelo decorator @CurrentUser no controller.
-   * 
-   * @type {string}
-   * @required
-   * @format uuid
-   * @example "123e4567-e89b-12d3-a456-426614174001"
-   */
-  @IsUUID()
-  @IsNotEmpty()
-  userId: string;
 
   /**
    * Tipo do cálculo metabólico a ser realizado.
