@@ -1,6 +1,52 @@
+/**
+ * Testes Unitários - BMICalculatorService
+ * 
+ * Suite completa de testes para o serviço de cálculo de BMI (Body Mass Index).
+ * Testa os cálculos de índice de massa corporal e classificação de peso
+ * para diferentes cenários de peso e altura.
+ * 
+ * @testSuite BMICalculatorService
+ * @testFramework Jest + NestJS Testing
+ * @coverage
+ * - Cálculo correto do BMI
+ * - Classificação de peso (Abaixo, Normal, Sobrepeso, Obesidade)
+ * - Casos extremos (valores muito baixos e altos)
+ * - Valores decimais e precisão
+ * - Casos limite das classificações
+ * - Estrutura de retorno dos dados
+ * 
+ * @testTypes
+ * - Unit Tests: Lógica de cálculo isolada
+ * - Mathematical Tests: Validação de fórmulas
+ * - Classification Tests: Validação de categorias
+ * - Edge Case Tests: Valores extremos
+ * 
+ * @formula
+ * - BMI = peso / (altura × altura)
+ * - Classificações:
+ *   - Abaixo do peso: BMI < 18.5
+ *   - Peso normal: 18.5 ≤ BMI < 25
+ *   - Sobrepeso: 25 ≤ BMI < 30
+ *   - Obesidade: BMI ≥ 30
+ * 
+ * @author Sistema EndoData
+ * @since 2025-01-01
+ * @version 1.0.0
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { BMICalculatorService } from './bmi-calculator.service';
 
+/**
+ * Suite de Testes do BMICalculatorService
+ * 
+ * Testa todos os cenários de cálculo de BMI, incluindo diferentes
+ * combinações de peso e altura, e validação das classificações.
+ * 
+ * @testSuite BMICalculatorService
+ * @scope Unit Tests
+ * @coverage 100% dos métodos públicos
+ */
 describe('BMICalculatorService', () => {
   let service: BMICalculatorService;
 
@@ -66,12 +112,12 @@ describe('BMICalculatorService', () => {
       expect(result.classification).toBe('Peso normal');
     });
 
-    it('should handle edge case BMI exactly 30', () => {
-      const result = service.calculate(91.875, 1.75);
-      
-      expect(result.bmi).toBeCloseTo(30.0, 1);
-      expect(result.classification).toBe('Sobrepeso');
-    });
+      it('should handle edge case BMI exactly 30', () => {
+        const result = service.calculate(91.875, 1.75);
+        
+        expect(result.bmi).toBeCloseTo(30.0, 1);
+        expect(result.classification).toBe('Obesidade');
+      });
 
     it('should handle very low BMI', () => {
       const result = service.calculate(30, 1.75);
@@ -87,12 +133,12 @@ describe('BMICalculatorService', () => {
       expect(result.classification).toBe('Obesidade');
     });
 
-    it('should handle decimal values correctly', () => {
-      const result = service.calculate(68.5, 1.72);
-      
-      expect(result.bmi).toBeCloseTo(23.14, 2);
-      expect(result.classification).toBe('Peso normal');
-    });
+      it('should handle decimal values correctly', () => {
+        const result = service.calculate(68.5, 1.72);
+        
+        expect(result.bmi).toBeCloseTo(23.15, 2);
+        expect(result.classification).toBe('Peso normal');
+      });
 
     it('should return correct structure', () => {
       const result = service.calculate(70, 1.75);

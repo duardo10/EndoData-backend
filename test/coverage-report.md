@@ -220,3 +220,4 @@ The EndoData backend test suite provides comprehensive coverage of all critical 
 5. **Maintainability**: Well-structured, documented, and maintainable tests
 
 The test suite ensures high code quality, reliability, and maintainability of the EndoData backend application.
+

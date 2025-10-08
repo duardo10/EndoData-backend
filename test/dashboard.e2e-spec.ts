@@ -1,9 +1,50 @@
+/**
+ * Testes End-to-End - Dashboard Controller
+ * 
+ * Suite completa de testes E2E para o Dashboard Controller.
+ * Testa todas as rotas do dashboard com autenticação JWT,
+ * incluindo validação de autorização, cache e funcionalidades.
+ * 
+ * @testSuite DashboardController
+ * @testFramework Jest + Supertest + NestJS
+ * @testType End-to-End Tests
+ * @coverage
+ * - Rotas de resumo do dashboard
+ * - Métricas avançadas
+ * - Gráficos de pacientes semanais
+ * - Top medicamentos
+ * - Comparação de receita mensal
+ * - Funcionalidade de cache
+ * - Autenticação e autorização
+ * - Validação de parâmetros
+ * 
+ * @testTypes
+ * - E2E Tests: Fluxo completo da aplicação
+ * - Authentication Tests: Validação de JWT
+ * - Cache Tests: Funcionalidade de cache
+ * - Parameter Validation: Validação de entrada
+ * 
+ * @author Sistema EndoData
+ * @since 2025-01-01
+ * @version 1.0.0
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { JwtService } from '@nestjs/jwt';
 
+/**
+ * Suite de Testes E2E do Dashboard Controller
+ * 
+ * Testa todas as funcionalidades do dashboard em um ambiente
+ * de integração completo, incluindo autenticação e cache.
+ * 
+ * @testSuite DashboardController
+ * @scope End-to-End Tests
+ * @coverage 100% das rotas do dashboard
+ */
 describe('Dashboard Controller (e2e)', () => {
   let app: INestApplication;
   let jwtService: JwtService;

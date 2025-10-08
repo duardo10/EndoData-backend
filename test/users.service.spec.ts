@@ -1,3 +1,36 @@
+/**
+ * Testes Unitários - UsersService
+ * 
+ * Suite completa de testes para o serviço de usuários.
+ * Testa todas as operações CRUD e validações de negócio,
+ * incluindo criação, busca, atualização e remoção de usuários.
+ * 
+ * @testSuite UsersService
+ * @testFramework Jest + NestJS Testing
+ * @coverage
+ * - Criação de usuários com validações
+ * - Busca de usuários (findAll, findOne)
+ * - Remoção de usuários
+ * - Validação de unicidade (email, CPF, CRM)
+ * - Hash de senhas com bcrypt
+ * - Tratamento de erros e exceções
+ * 
+ * @mockStrategy
+ * - Repository pattern com mocks do TypeORM
+ * - Isolamento completo de dependências
+ * - Testes de comportamento e não implementação
+ * 
+ * @testTypes
+ * - Unit Tests: Lógica de negócio isolada
+ * - Error Handling: Cenários de exceção
+ * - Validation Tests: Regras de validação
+ * - Security Tests: Hash de senhas
+ * 
+ * @author Sistema EndoData
+ * @since 2025-01-01
+ * @version 1.0.0
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConflictException } from '@nestjs/common';
@@ -5,6 +38,16 @@ import { UsersService } from '../src/users/users.service';
 import { User } from '../src/users/entities/user.entity';
 import { createMockRepository } from './mocks/typeorm-mocks';
 
+/**
+ * Suite de Testes do UsersService
+ * 
+ * Testa todos os métodos do serviço de usuários usando mocks
+ * do TypeORM e validando comportamentos esperados e casos de erro.
+ * 
+ * @testSuite UsersService
+ * @scope Unit Tests
+ * @coverage 100% dos métodos públicos
+ */
 describe('UsersService', () => {
   let service: UsersService;
   let userRepository: any;

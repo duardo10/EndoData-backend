@@ -5,12 +5,12 @@
  * Testa todas as operações CRUD e validações de negócio.
  * 
  * @testCoverage
- * - ✅ Criação de prescrições com validações
- * - ✅ Busca de prescrições por paciente
- * - ✅ Busca de prescrição individual
- * - ✅ Atualização de status
- * - ✅ Validações de relacionamentos
- * - ✅ Tratamento de erros e exceções
+ * - Criação de prescrições com validações
+ * - Busca de prescrições por paciente
+ * - Busca de prescrição individual
+ * - Atualização de status
+ * - Validações de relacionamentos
+ * - Tratamento de erros e exceções
  * 
  * @mockStrategy
  * - Repositórios mockados com jest

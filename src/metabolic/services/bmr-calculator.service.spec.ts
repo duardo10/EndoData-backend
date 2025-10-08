@@ -1,6 +1,48 @@
+/**
+ * Testes Unitários - BMRCalculatorService
+ * 
+ * Suite completa de testes para o serviço de cálculo de BMR (Basal Metabolic Rate).
+ * Testa os cálculos de taxa metabólica basal usando a fórmula de Mifflin-St Jeor
+ * para diferentes cenários de peso, altura, idade e sexo.
+ * 
+ * @testSuite BMRCalculatorService
+ * @testFramework Jest + NestJS Testing
+ * @coverage
+ * - Cálculos para homens (fórmula masculina)
+ * - Cálculos para mulheres (fórmula feminina)
+ * - Casos extremos (valores mínimos e máximos)
+ * - Valores decimais e precisão
+ * - Validação de tipos e segurança
+ * - Validação das fórmulas matemáticas
+ * 
+ * @testTypes
+ * - Unit Tests: Lógica de cálculo isolada
+ * - Mathematical Tests: Validação de fórmulas
+ * - Edge Case Tests: Valores extremos
+ * - Type Safety Tests: Validação de tipos
+ * 
+ * @formula
+ * - Homens: BMR = 88.36 + (13.4 × peso) + (4.8 × altura) - (5.7 × idade)
+ * - Mulheres: BMR = 447.6 + (9.2 × peso) + (3.1 × altura) - (4.3 × idade)
+ * 
+ * @author Sistema EndoData
+ * @since 2025-01-01
+ * @version 1.0.0
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { BMRCalculatorService } from './bmr-calculator.service';
 
+/**
+ * Suite de Testes do BMRCalculatorService
+ * 
+ * Testa todos os cenários de cálculo de BMR, incluindo diferentes
+ * combinações de parâmetros e validação das fórmulas matemáticas.
+ * 
+ * @testSuite BMRCalculatorService
+ * @scope Unit Tests
+ * @coverage 100% dos métodos públicos
+ */
 describe('BMRCalculatorService', () => {
   let service: BMRCalculatorService;
 
@@ -46,8 +88,8 @@ describe('BMRCalculatorService', () => {
         const result = service.calculate(75.5, 1.78, 35.5, 'M');
         
         // BMR = 88.36 + (13.4 * 75.5) + (4.8 * 178) - (5.7 * 35.5)
-        // BMR = 88.36 + 1011.7 + 854.4 - 202.35 = 1751.21
-        expect(result).toBeCloseTo(1751.21, 2);
+        // BMR = 88.36 + 1011.7 + 854.4 - 202.35 = 1752.11
+        expect(result).toBeCloseTo(1752.11, 2);
       });
     });
 

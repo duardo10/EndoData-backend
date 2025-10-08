@@ -1,3 +1,40 @@
+/**
+ * Testes Unitários - MetabolicService
+ * 
+ * Suite completa de testes para o serviço de cálculos metabólicos.
+ * Testa todas as funcionalidades de cálculo e persistência de dados,
+ * incluindo BMI, BMR, TDEE e relacionamentos com pacientes e usuários.
+ * 
+ * @testSuite MetabolicService
+ * @testFramework Jest + NestJS Testing
+ * @coverage
+ * - Criação de cálculos para pacientes
+ * - Listagem de cálculos por paciente
+ * - Cálculo de BMI com persistência
+ * - Cálculo de BMR com persistência
+ * - Cálculo de TDEE com persistência
+ * - Validação de relacionamentos (Patient, User)
+ * - Tratamento de erros e exceções
+ * - Integração com calculadoras especializadas
+ * 
+ * @mockStrategy
+ * - Repository pattern com mocks do TypeORM
+ * - Mocks de serviços de cálculo (BMI, BMR)
+ * - Mocks de entidades relacionadas
+ * - Dados de teste realísticos
+ * 
+ * @testTypes
+ * - Unit Tests: Lógica de negócio isolada
+ * - Integration Tests: Integração com calculadoras
+ * - Error Handling: Cenários de exceção
+ * - Data Persistence Tests: Persistência de cálculos
+ * - Relationship Tests: Relacionamentos entre entidades
+ * 
+ * @author Sistema EndoData
+ * @since 2025-01-01
+ * @version 1.0.0
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
@@ -10,6 +47,16 @@ import { User } from '../users/entities/user.entity';
 import { CalculationType } from './enums/calculation-type.enum';
 import { createMockRepository } from '../../test/mocks/typeorm-mocks';
 
+/**
+ * Suite de Testes do MetabolicService
+ * 
+ * Testa todos os métodos do serviço de cálculos metabólicos usando mocks
+ * do TypeORM e validando comportamentos esperados e integrações.
+ * 
+ * @testSuite MetabolicService
+ * @scope Unit Tests
+ * @coverage 100% dos métodos públicos
+ */
 describe('MetabolicService', () => {
   let service: MetabolicService;
   let calculationRepository: any;
@@ -90,6 +137,8 @@ describe('MetabolicService', () => {
         {
           calculationType: CalculationType.BMI,
           inputData: { weight: 70, height: 1.75 },
+          patientId: 'patient-1',
+          userId: 'user-1',
         },
         'user-1'
       );
@@ -115,6 +164,8 @@ describe('MetabolicService', () => {
           {
             calculationType: CalculationType.BMI,
             inputData: { weight: 70, height: 1.75 },
+            patientId: 'patient-inexistente',
+            userId: 'user-1',
           },
           'user-1'
         )
@@ -132,6 +183,8 @@ describe('MetabolicService', () => {
           {
             calculationType: CalculationType.BMI,
             inputData: { weight: 70, height: 1.75 },
+            patientId: 'patient-1',
+            userId: 'user-inexistente',
           },
           'user-inexistente'
         )
@@ -189,7 +242,7 @@ describe('MetabolicService', () => {
       };
 
       patientRepository.findOne.mockResolvedValue(mockPatient);
-      bmiCalculator.calculate.mockReturnValue({ bmi: 22.86, classification: 'Peso normal' });
+      (bmiCalculator.calculate as jest.Mock).mockReturnValue({ bmi: 22.86, classification: 'Peso normal' });
       calculationRepository.create.mockReturnValue(mockCalculation);
       calculationRepository.save.mockResolvedValue(mockCalculation);
 
@@ -221,7 +274,7 @@ describe('MetabolicService', () => {
       };
 
       patientRepository.findOne.mockResolvedValue(mockPatient);
-      bmrCalculator.calculate.mockReturnValue(1695.36);
+      (bmrCalculator.calculate as jest.Mock).mockReturnValue(1695.36);
       calculationRepository.create.mockReturnValue(mockCalculation);
       calculationRepository.save.mockResolvedValue(mockCalculation);
 
@@ -253,7 +306,7 @@ describe('MetabolicService', () => {
       };
 
       patientRepository.findOne.mockResolvedValue(mockPatient);
-      bmrCalculator.calculate.mockReturnValue(1695.36);
+      (bmrCalculator.calculate as jest.Mock).mockReturnValue(1695.36);
       calculationRepository.create.mockReturnValue(mockCalculation);
       calculationRepository.save.mockResolvedValue(mockCalculation);
 
@@ -293,7 +346,7 @@ describe('MetabolicService', () => {
       const expectedTdee = bmrValue * activityLevel;
 
       patientRepository.findOne.mockResolvedValue(mockPatient);
-      bmrCalculator.calculate.mockReturnValue(bmrValue);
+      (bmrCalculator.calculate as jest.Mock).mockReturnValue(bmrValue);
       calculationRepository.create.mockReturnValue({});
       calculationRepository.save.mockResolvedValue({});
 

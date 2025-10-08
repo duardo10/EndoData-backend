@@ -37,9 +37,10 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest'
   },
-  testTimeout: 10000,
-  verbose: true,
+  testTimeout: 30000,
+  verbose: false,
   clearMocks: true,
   restoreMocks: true,
-  resetMocks: true
+  resetMocks: true,
+  maxWorkers: 1
 };

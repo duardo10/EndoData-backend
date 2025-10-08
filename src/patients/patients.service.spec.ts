@@ -1,3 +1,41 @@
+/**
+ * Testes Unitários - PatientsService
+ * 
+ * Suite completa de testes para o serviço de pacientes.
+ * Testa todas as operações CRUD e validações de negócio,
+ * incluindo criação, busca, atualização, remoção e restauração de pacientes.
+ * 
+ * @testSuite PatientsService
+ * @testFramework Jest + NestJS Testing
+ * @coverage
+ * - Criação de pacientes com validações
+ * - Busca de pacientes (findAll, findOne, findByCpf, findByUser)
+ * - Atualização de pacientes com validações de unicidade
+ * - Remoção e restauração de pacientes
+ * - Busca avançada com filtros
+ * - Visão completa do paciente (findComplete)
+ * - Validação de unicidade (CPF, email, telefone)
+ * - Normalização de dados (CPF)
+ * - Tratamento de erros e exceções
+ * 
+ * @mockStrategy
+ * - Repository pattern com mocks do TypeORM
+ * - Mocks de entidades relacionadas (User, MetabolicCalculation, Prescription)
+ * - Dados de teste realísticos
+ * - Simulação de cenários de erro
+ * 
+ * @testTypes
+ * - Unit Tests: Lógica de negócio isolada
+ * - Error Handling: Cenários de exceção
+ * - Validation Tests: Regras de validação
+ * - Search Tests: Funcionalidades de busca
+ * - Relationship Tests: Relacionamentos entre entidades
+ * 
+ * @author Sistema EndoData
+ * @since 2025-01-01
+ * @version 1.0.0
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException, ConflictException } from '@nestjs/common';
@@ -10,6 +48,16 @@ import { PatientGender } from './entities/patient.entity';
 import { BloodType } from './entities/patient.entity';
 import { createMockRepository } from '../../test/mocks/typeorm-mocks';
 
+/**
+ * Suite de Testes do PatientsService
+ * 
+ * Testa todos os métodos do serviço de pacientes usando mocks
+ * do TypeORM e validando comportamentos esperados e casos de erro.
+ * 
+ * @testSuite PatientsService
+ * @scope Unit Tests
+ * @coverage 100% dos métodos públicos
+ */
 describe('PatientsService', () => {
   let service: PatientsService;
   let patientsRepository: any;
@@ -157,7 +205,7 @@ describe('PatientsService', () => {
           phone: '11999999999',
           userId: 'user-1',
         })
-      ).rejects.toThrow(ConflictException);
+      ).rejects.toThrow('Telefone já cadastrado.');
     });
 
     it('deve normalizar CPF corretamente', async () => {

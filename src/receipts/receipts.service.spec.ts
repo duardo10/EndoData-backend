@@ -794,12 +794,12 @@ describe('ReceiptsService', () => {
  * do ReceiptsService, garantindo qualidade e confiabilidade do sistema.
  * 
  * @summary
- * - ✅ 20 testes implementados
- * - ✅ 6 métodos públicos testados
- * - ✅ Cenários de sucesso e erro cobertos
- * - ✅ Mocks do TypeORM configurados
- * - ✅ Validações de negócio testadas
- * - ✅ Cálculos financeiros validados
+ * - 20 testes implementados
+ * - 6 métodos públicos testados
+ * - Cenários de sucesso e erro cobertos
+ * - Mocks do TypeORM configurados
+ * - Validações de negócio testadas
+ * - Cálculos financeiros validados
  * 
  * @testCoverage
  * - create(): 3 testes (sucesso, erro, múltiplos itens)

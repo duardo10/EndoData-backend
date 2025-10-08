@@ -1,3 +1,38 @@
+/**
+ * Testes Unitários - DashboardService
+ * 
+ * Suite completa de testes para o serviço de dashboard.
+ * Testa todas as funcionalidades de métricas e relatórios,
+ * incluindo resumos, gráficos e comparações financeiras.
+ * 
+ * @testSuite DashboardService
+ * @testFramework Jest + NestJS Testing
+ * @coverage
+ * - Resumo do dashboard (total de pacientes, registros diários/semanais)
+ * - Métricas avançadas (receita mensal, prescrições ativas)
+ * - Gráficos de pacientes semanais
+ * - Top medicamentos mais prescritos
+ * - Comparação de receita mensal
+ * - Cálculos de médias e totais
+ * - Tratamento de dados vazios
+ * 
+ * @mockStrategy
+ * - Repository pattern com mocks do TypeORM
+ * - Mocks de entidades relacionadas
+ * - Dados de teste realísticos
+ * - Simulação de cenários de erro
+ * 
+ * @testTypes
+ * - Unit Tests: Lógica de negócio isolada
+ * - Data Processing Tests: Cálculos e agregações
+ * - Report Generation Tests: Geração de relatórios
+ * - Edge Case Tests: Dados vazios e cenários extremos
+ * 
+ * @author Sistema EndoData
+ * @since 2025-01-01
+ * @version 1.0.0
+ */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DashboardService } from './dashboard.service';
@@ -7,6 +42,16 @@ import { Prescription, PrescriptionStatus } from '../prescriptions/entities/pres
 import { PrescriptionMedication } from '../prescriptions/entities/prescription-medication.entity';
 import { createMockRepository } from '../../test/mocks/typeorm-mocks';
 
+/**
+ * Suite de Testes do DashboardService
+ * 
+ * Testa todos os métodos do serviço de dashboard usando mocks
+ * do TypeORM e validando comportamentos esperados e cálculos.
+ * 
+ * @testSuite DashboardService
+ * @scope Unit Tests
+ * @coverage 100% dos métodos públicos
+ */
 describe('DashboardService', () => {
   let service: DashboardService;
   let patientsRepository: any;
@@ -54,6 +99,8 @@ describe('DashboardService', () => {
     receiptsRepository.resetMocks();
     prescriptionsRepository.resetMocks();
     prescriptionMedicationsRepository.resetMocks();
+    // Reset createQueryBuilder mock
+    prescriptionMedicationsRepository.createQueryBuilder.mockReset();
   });
 
   it('should be defined', () => {
