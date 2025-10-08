@@ -3,6 +3,9 @@ import { ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import xss from 'xss';
+import { AuditLogInterceptor } from './common/interceptors/audit-log.interceptor';
+import { RateLimitGuard } from './common/guards/rate-limit.guard';
 
 /**
  * Função principal que inicializa a aplicação NestJS.
@@ -19,6 +22,12 @@ async function bootstrap() {
 
   // Filtro global de exceções
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  // Interceptor global de auditoria (ações críticas)
+  app.useGlobalInterceptors(new AuditLogInterceptor());
+
+  // Guard global de rate limiting (100 req/min por usuário)
+  app.useGlobalGuards(new RateLimitGuard());
 
   // Pipes de validação global
   app.useGlobalPipes(new ValidationPipe({
@@ -37,6 +46,19 @@ async function bootstrap() {
       }, HttpStatus.BAD_REQUEST);
     },
   }));
+
+  // Sanitização simples de inputs (XSS) — aplica em bodies string
+  app.use((req, _res, next) => {
+    if (req.body && typeof req.body === 'object') {
+      for (const key of Object.keys(req.body)) {
+        const val = req.body[key];
+        if (typeof val === 'string') {
+          req.body[key] = xss(val);
+        }
+      }
+    }
+    next();
+  });
 
   // Prefixo global para API
   app.setGlobalPrefix('api');
