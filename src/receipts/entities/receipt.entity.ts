@@ -1,5 +1,33 @@
 /**
- * @file Define a entidade Receipt para o banco de dados.
+ * Entidade Receipt - Recibo Médico
+ * 
+ * Representa um recibo ou fatura médica no sistema EndoData.
+ * Contém informações de faturamento, relacionamentos com pacientes
+ * e usuários, além de itens detalhados de serviços prestados.
+ * 
+ * @entity receipts
+ * 
+ * @features
+ * - Cálculo automático de totais
+ * - Controle de status de pagamento
+ * - Relacionamento com pacientes e usuários
+ * - Cascade de operações para itens
+ * - Timestamps automáticos
+ * 
+ * @businessRules
+ * - Todo recibo deve ter pelo menos um item
+ * - Total calculado automaticamente
+ * - Status controlado via enum
+ * - Data de criação automática
+ * 
+ * @relationships
+ * - ManyToOne com Patient
+ * - ManyToOne com User
+ * - OneToMany com ReceiptItem
+ * 
+ * @author Sistema EndoData
+ * @since 2025-09-30
+ * @version 1.0.0
  */
 
 import {
@@ -20,8 +48,13 @@ import { ReceiptItem } from './receipt-item.entity';
 import { ReceiptStatus } from '../enums/receipt-status.enum';
 
 /**
- * Representa um recibo ou fatura médica.
- * @class
+ * Entidade Recibo Médico
+ * 
+ * Representa um recibo ou fatura médica completa no sistema.
+ * Gerencia faturamento, relacionamentos e cálculos automáticos.
+ * 
+ * @class Receipt
+ * @entity receipts
  */
 @Entity('receipts')
 export class Receipt {

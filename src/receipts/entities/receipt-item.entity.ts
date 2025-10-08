@@ -1,5 +1,30 @@
 /**
- * @file Define a entidade ReceiptItem para o banco de dados.
+ * Entidade ReceiptItem - Item de Recibo
+ * 
+ * Representa um item individual dentro de um recibo médico.
+ * Contém detalhes do serviço ou produto, quantidade, preços
+ * e cálculo automático do valor total.
+ * 
+ * @entity receipt_items
+ * 
+ * @features
+ * - Cálculo automático de preço total
+ * - Validação de quantidade e preços
+ * - Relacionamento com recibo pai
+ * - Precisão decimal para valores monetários
+ * 
+ * @businessRules
+ * - Quantidade deve ser positiva
+ * - Preço unitário deve ser positivo
+ * - Total calculado automaticamente (quantidade × preço unitário)
+ * - Descrição obrigatória
+ * 
+ * @relationships
+ * - ManyToOne com Receipt
+ * 
+ * @author Sistema EndoData
+ * @since 2025-09-30
+ * @version 1.0.0
  */
 
 import {
@@ -14,8 +39,13 @@ import {
 import { Receipt } from './receipt.entity';
 
 /**
- * Representa um item dentro de um recibo.
- * @class
+ * Entidade Item de Recibo
+ * 
+ * Representa um item individual dentro de um recibo médico.
+ * Inclui cálculo automático de totais e validações.
+ * 
+ * @class ReceiptItem
+ * @entity receipt_items
  */
 @Entity('receipt_items')
 export class ReceiptItem {
@@ -72,7 +102,12 @@ export class ReceiptItem {
 
   /**
    * Calcula o preço total antes de inserir ou atualizar a entidade.
-   * @method
+   * 
+   * Hook do TypeORM que executa automaticamente antes de salvar.
+   * Garante que o total está sempre sincronizado com quantidade e preço unitário.
+   * 
+   * @method calculateTotalPrice
+   * @lifecycle BeforeInsert, BeforeUpdate
    */
   @BeforeInsert()
   @BeforeUpdate()

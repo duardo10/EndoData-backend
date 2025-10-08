@@ -4,6 +4,9 @@ import { PatientsService } from './patients.service';
 import { PatientsController } from './patients.controller';
 import { Patient } from './entities/patient.entity';
 import { User } from '../users/entities/user.entity';
+import { MetabolicCalculation } from '../metabolic/entities/metabolic-calculation.entity';
+import { Prescription } from '../prescriptions/entities/prescription.entity';
+import { PrescriptionMedication } from '../prescriptions/entities/prescription-medication.entity';
 
 /**
  * Módulo responsável por agrupar as dependências e funcionalidades relacionadas a pacientes.
@@ -14,7 +17,7 @@ import { User } from '../users/entities/user.entity';
     /**
      * Importa os repositórios das entidades Patient e User para uso no módulo.
      */
-    TypeOrmModule.forFeature([Patient, User]),
+    TypeOrmModule.forFeature([Patient, User, MetabolicCalculation, Prescription, PrescriptionMedication]),
   ],
   controllers: [
     /**

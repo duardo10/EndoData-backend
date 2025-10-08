@@ -1,5 +1,24 @@
 /**
- * @file Define o DTO para a criação de um novo recibo.
+ * DTO para Criação de Recibo
+ * 
+ * Define a estrutura de dados necessária para criar um novo recibo médico.
+ * Inclui validações automáticas e documentação Swagger para API.
+ * 
+ * @dto CreateReceiptDto
+ * 
+ * @validation
+ * - patientId: UUID válido obrigatório
+ * - items: Array de itens validado e aninhado
+ * - status: Enum opcional com valor padrão
+ * 
+ * @swagger
+ * - Documentação completa da API
+ * - Exemplos de uso
+ * - Tipos de dados especificados
+ * 
+ * @author Sistema EndoData
+ * @since 2025-09-30
+ * @version 1.0.0
  */
 
 import { IsUUID, IsArray, ValidateNested, IsOptional, IsEnum } from 'class-validator';
@@ -9,8 +28,12 @@ import { ReceiptStatus } from '../enums/receipt-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 /**
- * DTO para a criação de um novo recibo.
- * @class
+ * DTO para criação de um novo recibo médico.
+ * 
+ * Usado no endpoint POST /receipts para criar recibos
+ * com validação automática e transformação de dados.
+ * 
+ * @class CreateReceiptDto
  */
 export class CreateReceiptDto {
   /**

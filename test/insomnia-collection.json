@@ -1,0 +1,316 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-01T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8.0.0",
+  "resources": [
+    {
+      "_id": "req_dashboard_summary",
+      "parentId": "fld_dashboard",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "url": "{{ _.base_url }}/api/dashboard/summary",
+      "name": "Dashboard Summary",
+      "description": "Retorna estatísticas básicas do dashboard (total de pacientes, registrados hoje e na semana)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.auth_token }}",
+          "description": "Token JWT de autenticação"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696118400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_dashboard_metrics",
+      "parentId": "fld_dashboard",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "url": "{{ _.base_url }}/api/dashboard/metrics",
+      "name": "Dashboard Metrics",
+      "description": "Retorna métricas avançadas incluindo receita mensal, prescrições ativas e valor médio por receita",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.auth_token }}",
+          "description": "Token JWT de autenticação"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696118300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_dashboard_weekly_patients_default",
+      "parentId": "fld_dashboard",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "url": "{{ _.base_url }}/api/dashboard/weekly-patients",
+      "name": "Weekly Patients Chart (Default)",
+      "description": "Retorna dados do gráfico de novos pacientes por semana (últimas 8 semanas por padrão)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.auth_token }}",
+          "description": "Token JWT de autenticação"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696118200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_dashboard_weekly_patients_custom",
+      "parentId": "fld_dashboard",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "url": "{{ _.base_url }}/api/dashboard/weekly-patients",
+      "name": "Weekly Patients Chart (Custom)",
+      "description": "Retorna dados do gráfico de novos pacientes por semana com período personalizado",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "id": "pair_weeks",
+          "name": "weeks",
+          "value": "12",
+          "description": "Número de semanas para análise (1-52)"
+        }
+      ],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.auth_token }}",
+          "description": "Token JWT de autenticação"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696118150000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_dashboard_top_medications_default",
+      "parentId": "fld_dashboard",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "url": "{{ _.base_url }}/api/dashboard/top-medications",
+      "name": "Top Medications (Default)",
+      "description": "Retorna os 10 medicamentos mais prescritos nos últimos 6 meses",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.auth_token }}",
+          "description": "Token JWT de autenticação"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696118100000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_dashboard_top_medications_custom",
+      "parentId": "fld_dashboard",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "url": "{{ _.base_url }}/api/dashboard/top-medications",
+      "name": "Top Medications (Custom)",
+      "description": "Retorna medicamentos mais prescritos com parâmetros personalizados",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "id": "pair_limit",
+          "name": "limit",
+          "value": "15",
+          "description": "Número de medicamentos a retornar (1-50)"
+        },
+        {
+          "id": "pair_period",
+          "name": "period",
+          "value": "12",
+          "description": "Período em meses para análise (1-24)"
+        }
+      ],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.auth_token }}",
+          "description": "Token JWT de autenticação"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696118050000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_dashboard_monthly_revenue_comparison",
+      "parentId": "fld_dashboard",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "url": "{{ _.base_url }}/api/dashboard/monthly-revenue-comparison",
+      "name": "Monthly Revenue Comparison",
+      "description": "Compara a receita do mês atual com a do mês anterior",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.auth_token }}",
+          "description": "Token JWT de autenticação"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696118000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_dashboard",
+      "parentId": "wrk_endodata",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "name": "Dashboard Endpoints",
+      "description": "Endpoints do sistema de dashboard do EndoData",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1696118400000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_endodata",
+      "parentId": null,
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "name": "EndoData Backend API",
+      "description": "Collection completa da API do EndoData Backend",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_endodata",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "auth_token": "SEU_TOKEN_JWT_AQUI"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "auth_token"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1696118400000,
+      "_type": "environment"
+    },
+    {
+      "_id": "env_local",
+      "parentId": "env_base",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "name": "Local Development",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "auth_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MTUyOTM1ZS05MzJlLTRhYzgtOTIxNS05YjQ5ZmNhYjFkYTEiLCJlbWFpbCI6ImRhc2hib2FyZEBmaXhlZC5jb20iLCJuYW1lIjoiRHIuIERhc2hib2FyZCBDb3JyaWdpZG8iLCJpc0FkbWluaXN0cmFkb3IiOmZhbHNlLCJpYXQiOjE3NTkzNDU0MjksImV4cCI6MTc1OTQzMTgyOX0.SyQ42f5o2RWH0ZFpr-yuSCaYFDpZALF8wRgRrI1XvCU"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url", 
+          "auth_token"
+        ]
+      },
+      "color": "#7d69cb",
+      "isPrivate": false,
+      "metaSortKey": 1696118400000,
+      "_type": "environment"
+    },
+    {
+      "_id": "env_production",
+      "parentId": "env_base",
+      "modified": 1696118400000,
+      "created": 1696118400000,
+      "name": "Production",
+      "data": {
+        "base_url": "https://api.endodata.com",
+        "auth_token": "SEU_TOKEN_PRODUCAO_AQUI"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "auth_token"
+        ]
+      },
+      "color": "#d9534f",
+      "isPrivate": false,
+      "metaSortKey": 1696118500000,
+      "_type": "environment"
+    }
+  ]
+}
