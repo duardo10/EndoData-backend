@@ -137,8 +137,6 @@ describe('MetabolicService', () => {
         {
           calculationType: CalculationType.BMI,
           inputData: { weight: 70, height: 1.75 },
-          patientId: 'patient-1',
-          userId: 'user-1',
         },
         'user-1'
       );
@@ -164,8 +162,6 @@ describe('MetabolicService', () => {
           {
             calculationType: CalculationType.BMI,
             inputData: { weight: 70, height: 1.75 },
-            patientId: 'patient-inexistente',
-            userId: 'user-1',
           },
           'user-1'
         )
@@ -183,8 +179,6 @@ describe('MetabolicService', () => {
           {
             calculationType: CalculationType.BMI,
             inputData: { weight: 70, height: 1.75 },
-            patientId: 'patient-1',
-            userId: 'user-inexistente',
           },
           'user-inexistente'
         )

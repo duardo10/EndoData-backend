@@ -98,6 +98,13 @@ describe('PatientsService', () => {
     usersRepository = module.get(getRepositoryToken(User));
     calculationsRepository = module.get(getRepositoryToken(MetabolicCalculation));
     prescriptionsRepository = module.get(getRepositoryToken(Prescription));
+
+    // Resetar mocks para garantir isolamento
+    if (patientsRepository.findOne) patientsRepository.findOne.mockReset();
+    if (patientsRepository.find) patientsRepository.find.mockReset();
+    if (patientsRepository.save) patientsRepository.save.mockReset();
+    if (patientsRepository.create) patientsRepository.create.mockReset();
+    if (usersRepository.findOne) usersRepository.findOne.mockReset();
   });
 
   afterEach(() => {
@@ -191,10 +198,13 @@ describe('PatientsService', () => {
     it('deve falhar quando telefone já cadastrado', async () => {
       const mockUser = { id: 'user-1', name: 'Médico Teste' };
       usersRepository.findOne.mockResolvedValue(mockUser);
-      patientsRepository.findOne
-        .mockResolvedValueOnce(null) // cpf check
-        .mockResolvedValueOnce(null) // email check
-        .mockResolvedValueOnce({ id: 'exists' }); // phone check
+      // Mock para cpf, email e phone
+      patientsRepository.findOne.mockImplementation(({ where }) => {
+        if (where?.cpf) return null; // cpf não cadastrado
+        if (where?.email) return null; // email não cadastrado
+        if (where?.phone) return { id: 'exists' }; // telefone já cadastrado
+        return null;
+      });
 
       await expect(
         service.create({
@@ -202,7 +212,7 @@ describe('PatientsService', () => {
           cpf: '123.456.789-00',
           birthDate: '1990-01-01',
           gender: PatientGender.MALE,
-          phone: '11999999999',
+          phone: '+5511999999999',
           userId: 'user-1',
         })
       ).rejects.toThrow('Telefone já cadastrado.');
