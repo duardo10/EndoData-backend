@@ -131,12 +131,18 @@ export class Receipt {
   /**
    * Calcula o total do recibo a partir dos itens antes de inserir/atualizar.
    * Garante que `totalAmount` reflita a soma dos `totalPrice` dos itens.
+   * Só executa se os itens estiverem carregados.
+   * 
+   * NOTA: Temporariamente desabilitado para permitir cálculo manual no service
    */
-  @BeforeInsert()
-  @BeforeUpdate()
+  // @BeforeInsert()
+  // @BeforeUpdate()
   calculateTotalAmount() {
     if (!this.items || this.items.length === 0) {
-      this.totalAmount = 0;
+      // Não resetar para 0 se totalAmount já foi setado manualmente
+      if (this.totalAmount === undefined || this.totalAmount === null) {
+        this.totalAmount = 0;
+      }
       return;
     }
 
@@ -146,8 +152,11 @@ export class Receipt {
       return Number(acc) + Number(itemTotal);
     }, 0);
 
-    // Arredonda para 2 casas decimais e garante tipo numérico
-    this.totalAmount = Number(sum.toFixed(2));
+    // Só atualiza se foi calculado baseado nos itens
+    if (sum > 0) {
+      // Arredonda para 2 casas decimais e garante tipo numérico
+      this.totalAmount = Number(sum.toFixed(2));
+    }
   }
 
   /**

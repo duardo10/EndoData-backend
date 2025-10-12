@@ -150,26 +150,30 @@ export class ReceiptsService {
       date: new Date(),
     });
 
+    // Calcular total do recibo primeiro
+    const totalAmount = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
+    receipt.totalAmount = totalAmount;
+
+    // Salvar o recibo
+    const savedReceipt = await this.receiptRepository.save(receipt);
+
     // Criar itens do recibo
     const receiptItems = items.map(item => {
       const receiptItem = this.receiptItemRepository.create({
         ...item,
+        receiptId: savedReceipt.id,
         totalPrice: item.quantity * item.unitPrice
       });
       return receiptItem;
     });
 
-    // Calcular total do recibo
-    receipt.totalAmount = receiptItems.reduce((sum, item) => sum + item.totalPrice, 0);
-
-    // Salvar o recibo
-    const savedReceipt = await this.receiptRepository.save(receipt);
-
-    // Associar itens ao recibo e salvar
-    receiptItems.forEach(item => {
-      item.receiptId = savedReceipt.id;
-    });
+    // Salvar os itens
     await this.receiptItemRepository.save(receiptItems);
+
+    // Atualizar o totalAmount diretamente no banco após salvar os itens
+    await this.receiptRepository.update(savedReceipt.id, { 
+      totalAmount: totalAmount 
+    });
 
     // Retornar recibo com relacionamentos
     return await this.findOne(savedReceipt.id);
@@ -234,7 +238,8 @@ export class ReceiptsService {
 
     const query = this.receiptRepository.createQueryBuilder('receipt')
       .leftJoinAndSelect('receipt.items', 'items')
-      .leftJoinAndSelect('receipt.patient', 'patient');
+      .leftJoinAndSelect('receipt.patient', 'patient')
+      .leftJoinAndSelect('receipt.user', 'user');
 
     // Filtro por período
     if (period && period !== 'custom') {
@@ -289,8 +294,20 @@ export class ReceiptsService {
 
     const [receipts, total] = await query.getManyAndCount();
 
+    // Recalcular totalAmount para cada recibo baseado nos itens carregados
+    const receiptsWithCorrectTotal = receipts.map(receipt => {
+      if (receipt.items && receipt.items.length > 0) {
+        const calculatedTotal = receipt.items.reduce((sum, item) => {
+          const itemTotal = parseFloat(item.totalPrice.toString()) || 0;
+          return sum + itemTotal;
+        }, 0);
+        receipt.totalAmount = Number(calculatedTotal.toFixed(2));
+      }
+      return receipt;
+    });
+
     return {
-      data: receipts,
+      data: receiptsWithCorrectTotal,
       total,
       page,
       limit,
@@ -316,11 +333,22 @@ export class ReceiptsService {
   async findOne(id: string): Promise<Receipt> {
     const receipt = await this.receiptRepository.findOne({
       where: { id },
-      relations: ['items', 'patient']
+      relations: ['items', 'patient', 'user']
     });
 
     if (!receipt) {
       throw new NotFoundException(`Recibo com ID ${id} não encontrado`);
+    }
+
+    // Recalcular totalAmount baseado nos itens carregados
+    if (receipt.items && receipt.items.length > 0) {
+      const calculatedTotal = receipt.items.reduce((sum, item) => {
+        const itemTotal = parseFloat(item.totalPrice.toString()) || 0;
+        return sum + itemTotal;
+      }, 0);
+      
+      // Atualizar o totalAmount com o valor calculado (garantir que seja number)
+      receipt.totalAmount = Number(calculatedTotal.toFixed(2));
     }
 
     return receipt;

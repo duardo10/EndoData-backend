@@ -228,6 +228,21 @@ export class PrescriptionsService {
   }
 
   /**
+   * Busca todas as prescrições do sistema.
+   * 
+   * Retorna todas as prescrições ordenadas por data de criação (mais recentes primeiro).
+   * Inclui dados do paciente, médico e medicamentos associados.
+   * 
+   * @returns Array de todas as prescrições
+   */
+  async findAll(): Promise<Prescription[]> {
+    return await this.prescriptionRepository.find({
+      relations: ['patient', 'user', 'medications'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  /**
    * Remove uma prescrição do sistema.
    * 
    * Remove também todos os medicamentos associados através do cascade.

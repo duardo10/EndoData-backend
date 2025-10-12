@@ -95,6 +95,20 @@ export class PrescriptionsController {
   }
 
   /**
+   * Busca todas as prescrições do sistema.
+   * 
+   * @route GET /prescriptions
+   * @returns Array de todas as prescrições ordenadas por data (mais recentes primeiro)
+   * 
+   * @example
+   * GET /prescriptions
+   */
+  @Get()
+  async findAll(): Promise<Prescription[]> {
+    return await this.prescriptionsService.findAll();
+  }
+
+  /**
    * Busca todas as prescrições de um paciente específico.
    * 
    * @route GET /prescriptions/patient/:id

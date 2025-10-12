@@ -633,4 +633,42 @@ export class PatientsService {
 
     return { patient, calculations, prescriptions };
   }
+
+  /**
+   * Busca UUIDs do paciente e userId baseado em CPF ou nome.
+   * 
+   * @param searchText - CPF ou nome do paciente para busca
+   * @returns Objeto com patientId e userId necessários para prescrições
+   */
+  async getPatientUuids(searchText: string): Promise<{ patientId: string; userId: string; patientName: string } | null> {
+    if (!searchText || searchText.trim().length === 0) {
+      return null;
+    }
+
+    const normalizedSearch = searchText.trim();
+    
+    // Primeiro tenta buscar por CPF exato
+    let patient = await this.patientsRepository.findOne({
+      where: { cpf: CpfUtils.onlyDigits(normalizedSearch) },
+      relations: ['user'],
+    });
+
+    // Se não encontrou por CPF, busca por nome (case insensitive)
+    if (!patient) {
+      patient = await this.patientsRepository.findOne({
+        where: { name: Like(`%${normalizedSearch}%`) },
+        relations: ['user'],
+      });
+    }
+
+    if (!patient) {
+      return null;
+    }
+
+    return {
+      patientId: patient.id,
+      userId: patient.user.id,
+      patientName: patient.name
+    };
+  }
 }
