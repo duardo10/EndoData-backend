@@ -1,11 +1,11 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
-// import { Public } from '../auth/decorators/public.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('calculations')
 @Controller('calculations')
 export class CalculationsController {
-  // @Public()
+  @Public()
   @Post('imc')
   @ApiOperation({ summary: 'Cálculo de IMC', description: 'Calcula o IMC e sua classificação nutricional.' })
   @ApiBody({ schema: {
@@ -28,7 +28,7 @@ export class CalculationsController {
     return { imc: Number(imc.toFixed(1)), classification };
   }
 
-  // @Public()
+  @Public()
   @Post('bmr')
   @ApiOperation({ summary: 'Cálculo de Metabolismo Basal (BMR/TMB)', description: 'Calcula BMR/TMB com ajuste de nível de atividade.' })
   @ApiBody({ schema: {
