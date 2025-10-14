@@ -25,6 +25,7 @@ import { ReceiptsModule } from './receipts/receipts.module';
 import { Receipt } from './receipts/entities/receipt.entity';
 import { ReceiptItem } from './receipts/entities/receipt-item.entity';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { CalculationsModule } from './calculations/calculations.module';
 
 /**
  * Módulo principal da aplicação.
@@ -54,6 +55,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     PrescriptionsModule,
     ReceiptsModule,
     DashboardModule,
+    CalculationsModule,
   ],
   controllers: [AppController],
   providers: [
