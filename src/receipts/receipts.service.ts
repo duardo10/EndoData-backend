@@ -438,14 +438,21 @@ export class ReceiptsService {
    */
   async remove(id: string): Promise<void> {
     const receipt = await this.receiptRepository.findOne({
-      where: { id }
+      where: { id },
+      relations: ['items']
     });
 
     if (!receipt) {
       throw new NotFoundException(`Recibo com ID ${id} não encontrado`);
     }
 
-    await this.receiptRepository.delete(id);
+    // Remover itens primeiro se existirem (para lidar com foreign keys)
+    if (receipt.items && receipt.items.length > 0) {
+      await this.receiptItemRepository.remove(receipt.items);
+    }
+
+    // Remover o recibo
+    await this.receiptRepository.remove(receipt);
   }
 
   /**
