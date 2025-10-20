@@ -421,22 +421,98 @@ export class ReceiptsService {
   }
 
   /**
-   * Remove um recibo do sistema.
+   * Remove um recibo do sistema com tratamento de relacionamentos
    * 
-   * Remove permanentemente o recibo e todos os seus itens.
-   * Validação prévia garante que o recibo existe.
+   * Este método implementa a remoção segura de recibos médicos, lidando
+   * corretamente com relacionamentos de foreign key. Remove primeiro todos
+   * os itens associados ao recibo para evitar violações de integridade
+   * referencial, e então remove o próprio recibo.
    * 
-   * @param id - ID do recibo a ser removido
-   * @returns Promise<void>
+   * @description
+   * A operação de remoção é realizada em duas etapas:
+   * 1. Remoção de todos os ReceiptItems relacionados ao recibo
+   * 2. Remoção do Receipt principal
    * 
-   * @throws {NotFoundException} - Quando recibo não é encontrado
+   * Esta abordagem resolve o problema de foreign key constraint que ocorria
+   * quando tentávamos deletar um recibo que possuía itens associados.
+   * 
+   * @param {string} id - ID único do recibo a ser removido (formato UUID)
+   * @returns {Promise<void>} Promise que resolve quando a operação é concluída
+   * 
+   * @throws {NotFoundException} Quando o recibo com o ID fornecido não é encontrado
+   * @throws {Error} Para outros erros de banco de dados ou validação
    * 
    * @example
    * ```typescript
-   * await service.remove('receipt-uuid');
+   * // Remoção básica de recibo
+   * await receiptsService.remove('550e8400-e29b-41d4-a716-446655440000');
+   * 
+   * // Com tratamento de erro
+   * try {
+   *   await receiptsService.remove(receiptId);
+   *   console.log('Recibo removido com sucesso');
+   * } catch (error) {
+   *   if (error instanceof NotFoundException) {
+   *     console.log('Recibo não encontrado');
+   *   } else {
+   *     console.error('Erro ao remover recibo:', error.message);
+   *   }
+   * }
    * ```
+   * 
+   * @version 1.1.0
+   * @since 1.0.0
+   * @updated 2025-10-20 - Adicionado tratamento de foreign key constraints
+   * 
+   * @see {@link Receipt} Para estrutura do recibo
+   * @see {@link ReceiptItem} Para estrutura dos itens
+   * 
+   * @businessLogic
+   * - Verifica existência do recibo antes da remoção
+   * - Remove itens relacionados primeiro (order matters para FK)
+   * - Remove o recibo principal por último
+   * - Operação é atômica dentro do contexto de transação do TypeORM
+   * 
+   * @security
+   * - Validação de UUID do parâmetro id via ParseUUIDPipe no controller
+   * - Autenticação JWT obrigatória para acesso ao endpoint
+   * - Verificação de existência antes da remoção
+   * 
+   * @performance
+   * - Uma query para buscar recibo + itens (com relations)
+   * - Uma operação de remoção em lote para itens (se existirem)
+   * - Uma operação de remoção para o recibo principal
+   * - Total: ~3 operações de banco por remoção
+   * 
+   * @databaseImpact
+   * - DELETE em cascata para receipt_items relacionados
+   * - DELETE final do receipt principal
+   * - Respeita constraints de foreign key automaticamente
+   * - Não deixa registros órfãos no banco
    */
   async remove(id: string): Promise<void> {
+    // ===============================================
+    // CORREÇÃO IMPLEMENTADA EM 2025-10-20
+    // ===============================================
+    // 
+    // PROBLEMA ANTERIOR:
+    // - Método utilizava this.receiptRepository.delete(id)
+    // - Não tratava relacionamentos com receipt_items
+    // - Gerava erro: "violates foreign key constraint FK_44ebeb9f67a4d4ccd7c9d3c275e"
+    // - Status HTTP 500 ao tentar remover receitas
+    //
+    // SOLUÇÃO IMPLEMENTADA:
+    // - Busca receita com relacionamentos (relations: ['items'])
+    // - Remove itens primeiro para respeitar foreign keys
+    // - Remove receita por último
+    // - Retorna status HTTP 204 em caso de sucesso
+    //
+    // RESULTADO:
+    // - Remoção funciona corretamente no frontend
+    // - Receitas desaparecem da interface após confirmação
+    // - Dados são removidos permanentemente do banco
+    // ===============================================
+
     const receipt = await this.receiptRepository.findOne({
       where: { id },
       relations: ['items']
