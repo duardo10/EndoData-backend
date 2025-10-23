@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere, Between } from 'typeorm';
 import { Prescription, PrescriptionStatus } from './entities/prescription.entity';
 import { PrescriptionMedication } from './entities/prescription-medication.entity';
 import { Patient } from '../patients/entities/patient.entity';
 import { User } from '../users/entities/user.entity';
 import { CreatePrescriptionDto } from './dto/create-prescription.dto';
+import { FilterPrescriptionDto } from './dto/filter-prescription.dto';
 
 /**
  * Serviço de Prescrições Médicas
@@ -228,15 +229,40 @@ export class PrescriptionsService {
   }
 
   /**
-   * Busca todas as prescrições do sistema.
+   * Busca todas as prescrições do sistema com filtros opcionais.
    * 
-   * Retorna todas as prescrições ordenadas por data de criação (mais recentes primeiro).
+   * Retorna prescrições ordenadas por data de criação (mais recentes primeiro).
    * Inclui dados do paciente, médico e medicamentos associados.
+   * Permite filtrar por status, paciente, médico e período de datas.
    * 
-   * @returns Array de todas as prescrições
+   * @param filters - Filtros opcionais para a busca
+   * @returns Array de prescrições que correspondem aos filtros
    */
-  async findAll(): Promise<Prescription[]> {
+  async findAll(filters?: FilterPrescriptionDto): Promise<Prescription[]> {
+    const where: FindOptionsWhere<Prescription> = {};
+
+    // Aplicar filtros se fornecidos
+    if (filters?.status) {
+      where.status = filters.status;
+    }
+
+    if (filters?.patientId) {
+      where.patient = { id: filters.patientId };
+    }
+
+    if (filters?.userId) {
+      where.user = { id: filters.userId };
+    }
+
+    // Filtro de período de datas
+    if (filters?.startDate && filters?.endDate) {
+      where.createdAt = Between(new Date(filters.startDate), new Date(filters.endDate));
+    } else if (filters?.startDate) {
+      where.createdAt = Between(new Date(filters.startDate), new Date());
+    }
+
     return await this.prescriptionRepository.find({
+      where,
       relations: ['patient', 'user', 'medications'],
       order: { createdAt: 'DESC' },
     });

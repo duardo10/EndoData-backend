@@ -7,6 +7,7 @@ import {
   Delete, 
   Body, 
   Param, 
+  Query,
   HttpStatus,
   HttpCode,
   ParseUUIDPipe
@@ -15,6 +16,7 @@ import { PrescriptionsService } from './prescriptions.service';
 import { CreatePrescriptionDto } from './dto/create-prescription.dto';
 import { UpdatePrescriptionDto } from './dto/update-prescription.dto';
 import { UpdatePrescriptionStatusDto } from './dto/update-prescription-status.dto';
+import { FilterPrescriptionDto } from './dto/filter-prescription.dto';
 import { Prescription } from './entities/prescription.entity';
 
 /**
@@ -95,17 +97,19 @@ export class PrescriptionsController {
   }
 
   /**
-   * Busca todas as prescrições do sistema.
+   * Busca todas as prescrições do sistema com filtros opcionais.
    * 
    * @route GET /prescriptions
-   * @returns Array de todas as prescrições ordenadas por data (mais recentes primeiro)
+   * @query filters - Filtros opcionais (status, patientId, userId, startDate, endDate, page, limit)
+   * @returns Array de prescrições que correspondem aos filtros
    * 
    * @example
-   * GET /prescriptions
+   * GET /prescriptions?status=active&patientId=123e4567-e89b-12d3-a456-426614174000
+   * GET /prescriptions?userId=123e4567-e89b-12d3-a456-426614174001&status=draft
    */
   @Get()
-  async findAll(): Promise<Prescription[]> {
-    return await this.prescriptionsService.findAll();
+  async findAll(@Query() filters: FilterPrescriptionDto): Promise<Prescription[]> {
+    return await this.prescriptionsService.findAll(filters);
   }
 
   /**
