@@ -19,7 +19,6 @@ export class CreatePatientDto {
    */
   @IsString()
   @IsNotEmpty()
-  @IsCpf({ message: 'CPF inválido' })
   cpf: string;
 
   /**
@@ -31,8 +30,9 @@ export class CreatePatientDto {
   /**
    * Gênero do paciente (enum: MASCULINO, FEMININO, OUTRO).
    */
+  @IsOptional()
   @IsEnum(PatientGender)
-  gender: PatientGender;
+  gender?: PatientGender;
 
   /**
    * E-mail do paciente (opcional).

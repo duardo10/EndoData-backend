@@ -112,6 +112,13 @@ export class PatientsService {
     }
 
     const { userId, ...patientData } = createPatientDto;
+    // Faz CAST para ENUMS do banco se existem
+    if (patientData.gender) {
+      (patientData as any).gender = patientData.gender as import('./entities/patient.entity').PatientGender;
+    }
+    if (patientData.bloodType) {
+      (patientData as any).bloodType = patientData.bloodType as import('./entities/patient.entity').BloodType;
+    }
     const patient = this.patientsRepository.create({
       ...patientData,
       cpf: normalizedCpf,
