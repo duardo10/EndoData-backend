@@ -37,7 +37,7 @@ export class SearchPatientsDto {
   name?: string;
 
   /**
-   * CPF do paciente (busca exata).
+   * CPF do paciente (busca parcial - permite buscar apenas os primeiros dígitos).
    */
   @IsOptional()
   @IsString()

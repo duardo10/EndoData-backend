@@ -524,10 +524,10 @@ export class PatientsService {
       }
     }
 
-    // Filtro por CPF (busca exata)
+    // Filtro por CPF (busca parcial)
     if (searchDto.cpf) {
       const normalizedCpf = CpfUtils.onlyDigits(searchDto.cpf);
-      queryBuilder.andWhere('patient.cpf = :cpf', { cpf: normalizedCpf });
+      queryBuilder.andWhere('patient.cpf LIKE :cpf', { cpf: `${normalizedCpf}%` });
     }
 
     // Filtro por idade (calculada a partir da data de nascimento)
