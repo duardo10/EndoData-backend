@@ -5,7 +5,9 @@
  * protegidas por padrão via JwtAuthGuard global, com exceção das rotas
  * explicitamente marcadas com @Public().
  */
-import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -36,6 +38,30 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Não autorizado.' })
   getProfile(@CurrentUser() user: CurrentUserData) {
     return user;
+  }
+
+  /**
+   * Atualiza o perfil do usuário autenticado (nome, email, telefone).
+   */
+  @Patch('profile')
+  @ApiOperation({ summary: 'Atualizar perfil do usuário autenticado' })
+  @ApiResponse({ status: 200, description: 'Perfil atualizado com sucesso.' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos.' })
+  @ApiResponse({ status: 401, description: 'Não autorizado.' })
+  async updateProfile(@CurrentUser() user: CurrentUserData, @Body() dto: UpdateUserProfileDto) {
+    return this.usersService.updateProfile(user.id, dto);
+  }
+
+  /**
+   * Atualiza a senha do usuário autenticado.
+   */
+  @Patch('password')
+  @ApiOperation({ summary: 'Alterar senha do usuário autenticado' })
+  @ApiResponse({ status: 200, description: 'Senha alterada com sucesso.' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos.' })
+  @ApiResponse({ status: 401, description: 'Não autorizado.' })
+  async updatePassword(@CurrentUser() user: CurrentUserData, @Body() dto: UpdateUserPasswordDto) {
+    return this.usersService.updatePassword(user.id, dto);
   }
 
   /**

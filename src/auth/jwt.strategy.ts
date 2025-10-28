@@ -54,6 +54,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
                 crm: user.crm,
                 especialidade: user.especialidade,
                 createdAt: user.createdAt,
+                phone: user.phone,
             };
         } catch (error) {
             throw new UnauthorizedException('Token inválido ou usuário não encontrado');
