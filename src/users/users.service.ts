@@ -38,6 +38,18 @@ export class UsersService {
       if (existingCrm) throw new ConflictException('CRM já cadastrado');
     }
 
+    // Verifica se todos os campos enviados são iguais aos já salvos
+    const isSame =
+      (dto.name === undefined || dto.name === user.name) &&
+      (dto.email === undefined || dto.email === user.email) &&
+      (dto.phone === undefined || dto.phone === user.phone) &&
+      (dto.crm === undefined || dto.crm === user.crm) &&
+      (dto.especialidade === undefined || dto.especialidade === user.especialidade);
+    if (isSame) {
+      // Retorna 204 No Content se não houve alteração
+      return { __NO_CONTENT: true };
+    }
+
     user.name = dto.name ?? user.name;
     user.email = dto.email ?? user.email;
     if (dto.phone !== undefined) user.phone = dto.phone;
@@ -58,14 +70,21 @@ export class UsersService {
    * Atualiza a senha do usuário autenticado.
    */
   async updatePassword(userId: string, dto: UpdateUserPasswordDto): Promise<any> {
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-    if (!user) throw new NotFoundException('Usuário não encontrado');
-    if (!dto.password || !dto.confirmPassword) throw new BadRequestException('Senha e confirmação são obrigatórias');
-    if (dto.password !== dto.confirmPassword) throw new BadRequestException('As senhas não coincidem');
-    if (dto.password.length < 6) throw new BadRequestException('A senha deve ter pelo menos 6 caracteres');
-    user.passwordHash = await bcrypt.hash(dto.password, 10);
-    await this.usersRepository.save(user);
-    return { message: 'Senha alterada com sucesso.' };
+  const user = await this.usersRepository.findOne({ where: { id: userId } });
+  if (!user) throw new NotFoundException('Usuário não encontrado');
+  if (!dto.password || !dto.confirmPassword) throw new BadRequestException('Senha e confirmação são obrigatórias');
+  if (dto.password.trim() === '' || dto.confirmPassword.trim() === '') throw new BadRequestException('Senha e confirmação não podem ser vazias');
+  if (dto.password !== dto.confirmPassword) throw new BadRequestException('As senhas não coincidem');
+  if (dto.password.length < 6) throw new BadRequestException('A senha deve ter pelo menos 6 caracteres');
+  // Verifica se a nova senha é igual à atual
+    const isSamePassword = await bcrypt.compare(dto.password, user.passwordHash);
+    if (isSamePassword) {
+      // Retorna 204 No Content se a senha for igual à atual
+      return { __NO_CONTENT: true };
+    }
+  user.passwordHash = await bcrypt.hash(dto.password, 10);
+  await this.usersRepository.save(user);
+  return { message: 'Senha alterada com sucesso.' };
   }
 
   /**

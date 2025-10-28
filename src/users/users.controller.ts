@@ -49,7 +49,11 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Dados inválidos.' })
   @ApiResponse({ status: 401, description: 'Não autorizado.' })
   async updateProfile(@CurrentUser() user: CurrentUserData, @Body() dto: UpdateUserProfileDto) {
-    return this.usersService.updateProfile(user.id, dto);
+    const result = await this.usersService.updateProfile(user.id, dto);
+    if (result && result.__NO_CONTENT) {
+      return { statusCode: 204 };
+    }
+    return result;
   }
 
   /**
@@ -61,7 +65,11 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Dados inválidos.' })
   @ApiResponse({ status: 401, description: 'Não autorizado.' })
   async updatePassword(@CurrentUser() user: CurrentUserData, @Body() dto: UpdateUserPasswordDto) {
-    return this.usersService.updatePassword(user.id, dto);
+    const result = await this.usersService.updatePassword(user.id, dto);
+    if (result && result.__NO_CONTENT) {
+      return { statusCode: 204 };
+    }
+    return result;
   }
 
   /**
