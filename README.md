@@ -1,6 +1,6 @@
-## EndoData Backend (NestJS)
+## EndoData Backend 
 
-API para gerenciamento de dados clínicos/endocrinológicos, construída com NestJS 10, TypeORM (PostgreSQL) e JWT para autenticação. Inclui documentação Swagger, validação e sanitização de entradas, interceptadores de auditoria, rate limiting e módulos de domínio (usuários, pacientes, prescrições, recibos, cálculos metabólicos e dashboard).
+Prontuário Eletrônico na Clínica Santa Luzia para Otimização do Atendimento e Gestão de Informações, construída com NestJS 10, TypeORM (PostgreSQL) e JWT para autenticação. Inclui documentação Swagger, validação e sanitização de entradas, interceptadores de auditoria, rate limiting e módulos de domínio (usuários, pacientes, prescrições, recibos, cálculos metabólicos e dashboard).
 
 ### Stack
 - **Runtime**: Node.js 18+
@@ -231,7 +231,6 @@ Arquivos de referência na raiz:
 
 ---
 
-## Licença
-Consulte `LICENSE` (se aplicável). Caso este repositório seja acadêmico, respeite as diretrizes do curso/projeto.
+
 
 
