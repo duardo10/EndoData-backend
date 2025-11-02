@@ -78,7 +78,7 @@ export class AuthService {
     async validateUser(userId: string): Promise<any> {
         const user = await this.userRepository.findOne({
             where: { id: userId },
-            select: ['id', 'name', 'email', 'isAdministrador', 'crm', 'especialidade', 'createdAt'],
+            select: ['id', 'name', 'email', 'isAdministrador', 'crm', 'especialidade', 'createdAt', 'phone'],
         });
 
         if (!user) {

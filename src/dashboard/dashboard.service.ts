@@ -182,6 +182,7 @@ export class DashboardService {
           startOfMonth,
           endOfMonth,
         })
+        .andWhere('receipt.status = :status', { status: 'paid' })
         .getRawOne(),
     ]);
 
@@ -387,7 +388,8 @@ export class DashboardService {
       .innerJoin('receipt.patient', 'patient')
       .where('patient.userId = :userId', { userId })
       .andWhere('receipt.date >= :startDate', { startDate: currentMonthStart })
-      .andWhere('receipt.date <= :endDate', { endDate: currentMonthEnd });
+      .andWhere('receipt.date <= :endDate', { endDate: currentMonthEnd })
+      .andWhere('receipt.status = :status', { status: 'paid' });
 
     // Query para receita do mês anterior
     const previousMonthQuery = this.receiptsRepository
@@ -397,7 +399,8 @@ export class DashboardService {
       .innerJoin('receipt.patient', 'patient')
       .where('patient.userId = :userId', { userId })
       .andWhere('receipt.date >= :startDate', { startDate: previousMonthStart })
-      .andWhere('receipt.date <= :endDate', { endDate: previousMonthEnd });
+      .andWhere('receipt.date <= :endDate', { endDate: previousMonthEnd })
+      .andWhere('receipt.status = :status', { status: 'paid' });
 
     // Executar queries em paralelo
     const [currentMonthResult, previousMonthResult] = await Promise.all([

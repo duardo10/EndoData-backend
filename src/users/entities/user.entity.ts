@@ -22,9 +22,14 @@ export class User {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
+
   /** Login opcional do usuário. */
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
   login: string;
+
+  /** Telefone do usuário (opcional). */
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  phone: string;
 
   /** Especialidade médica opcional. */
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
