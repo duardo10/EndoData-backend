@@ -6,17 +6,17 @@
 npm run start:dev
 ```
 
-A aplicação estará disponível em: http://localhost:3000
+A aplicação estará disponível em: http://209.145.59.215:3000
 
 ## 2. Documentação da API
 
-Acesse a documentação Swagger em: http://localhost:3000/api/docs
+Acesse a documentação Swagger em: http://209.145.59.215:3000/api/docs
 
 ## 3. Testar o Endpoint de Login
 
 ### Criar um usuário primeiro (rota pública)
 ```bash
-curl -X POST http://localhost:3000/api/users \
+curl -X POST http://209.145.59.215:3000/api/users \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Dr. João Silva",
@@ -30,7 +30,7 @@ curl -X POST http://localhost:3000/api/users \
 
 ### Fazer login
 ```bash
-curl -X POST http://localhost:3000/api/auth/login \
+curl -X POST http://209.145.59.215:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "joao@exemplo.com",
@@ -58,13 +58,13 @@ curl -X POST http://localhost:3000/api/auth/login \
 
 ### Listar usuários (rota protegida)
 ```bash
-curl -X GET http://localhost:3000/api/users \
+curl -X GET http://209.145.59.215:3000/api/users \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
 ### Buscar usuário por ID (rota protegida)
 ```bash
-curl -X GET http://localhost:3000/api/users/USER_ID \
+curl -X GET http://209.145.59.215:3000/api/users/USER_ID \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
@@ -72,7 +72,7 @@ curl -X GET http://localhost:3000/api/users/USER_ID \
 
 ### Criar usuário (rota pública)
 ```bash
-curl -X POST http://localhost:3000/api/users \
+curl -X POST http://209.145.59.215:3000/api/users \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Dr. Maria Santos",
@@ -87,7 +87,7 @@ curl -X POST http://localhost:3000/api/users \
 ## 6. Testar Sem Token (deve retornar 401)
 
 ```bash
-curl -X GET http://localhost:3000/api/users
+curl -X GET http://209.145.59.215:3000/api/users
 ```
 
 **Resposta esperada:**
@@ -105,7 +105,7 @@ Certifique-se de ter as seguintes variáveis no seu arquivo `.env`:
 ```env
 JWT_SECRET=seu-jwt-secret-super-seguro-aqui
 JWT_EXPIRES_IN=24h
-DATABASE_URL=postgresql://username:password@localhost:5432/endodata
+DATABASE_URL=postgresql://username:password@209.145.59.215:5432/endodata
 ```
 
 ## 8. Estrutura de Arquivos Implementados

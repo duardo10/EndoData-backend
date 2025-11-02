@@ -16,7 +16,7 @@ async function bootstrap() {
   
   // Configurar CORS
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+    origin: process.env.FRONTEND_URL || 'http://209.145.59.215:3001',
     credentials: true,
   });
 
@@ -95,7 +95,7 @@ async function bootstrap() {
   await app.listen(port);
   
   
-  console.log(`Application is running on: http://localhost:${port}/api`);
-  console.log(`Swagger documentation: http://localhost:${port}/api/docs`);
+  console.log(`Application is running on: http://209.145.59.215:${port}/api`);
+  console.log(`Swagger documentation: http://209.145.59.215:${port}/api/docs`);
 }
 bootstrap();

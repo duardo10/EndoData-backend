@@ -12,8 +12,8 @@ Prontuário Eletrônico na Clínica Santa Luzia para Otimização do Atendimento
 - **Container**: Docker / Docker Compose
 
 ### Endpoints principais
-- Base URL: `http://localhost:4000/api`
-- Swagger: `http://localhost:4000/api/docs`
+- Base URL: `http://209.145.59.215:4000/api`
+- Swagger: `http://209.145.59.215:4000/api/docs`
 
 Consulte também as documentações específicas:
 - `JWT_SETUP.md` (autenticação e uso de tokens)
@@ -30,14 +30,14 @@ Pré-requisitos: Docker e Docker Compose instalados.
 
 ```bash
 docker compose up -d --build
-# A API ficará disponível em http://localhost:4000/api
-# Swagger em http://localhost:4000/api/docs
+# A API ficará disponível em http://209.145.59.215:4000/api
+# Swagger em http://209.145.59.215:4000/api/docs
 ```
 
 O `docker-compose.yml` provisiona:
 - `postgres` (PostgreSQL 15)
 - `backend` (NestJS em modo desenvolvimento com hot reload)
-- `pgadmin` (opcional) em `http://localhost:8080` (email: `admin@admin.com`, senha: `admin123`)
+- `pgadmin` (opcional) em `http://209.145.59.215:8080` (email: `admin@admin.com`, senha: `admin123`)
 
 Variáveis já definidas no serviço `backend`:
 - `NODE_ENV=development`
@@ -77,7 +77,7 @@ PORT=4000
 DATABASE_URL=postgresql://USER:PASS@HOST:5432/DBNAME
 
 # CORS: URL do frontend permitido
-FRONTEND_URL=http://localhost:3001
+FRONTEND_URL=http://209.145.59.215:3001
 
 # JWT
 JWT_SECRET=uma-chave-secreta-forte
@@ -94,7 +94,7 @@ Notas:
 ---
 
 ## Documentação da API (Swagger)
-- Acessar: `http://localhost:4000/api/docs`
+- Acessar: `http://209.145.59.215:4000/api/docs`
 - Autorização: clique em "Authorize" e forneça `Bearer <seu_token>` (JWT).
 
 Tags principais:

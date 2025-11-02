@@ -32,9 +32,9 @@ npm run start:prod
 ```
 
 **URLs Disponíveis:**
-- **Backend**: http://localhost:3000/api
-- **Swagger**: http://localhost:3000/api/docs  
-- **pgAdmin**: http://localhost:8080
+- **Backend**: http://209.145.59.215:3000/api
+- **Swagger**: http://209.145.59.215:3000/api/docs  
+- **pgAdmin**: http://209.145.59.215:8080
 
 ## 🔑 Obtendo Token de Autenticação
 
@@ -42,7 +42,7 @@ npm run start:prod
 
 ```bash
 # Criar usuário para teste do dashboard
-curl -X POST http://localhost:3000/api/users \
+curl -X POST http://209.145.59.215:3000/api/users \
   -H "Content-Type: application/json" \
   -d '{
     "nome": "Dr. Dashboard Teste",
@@ -59,7 +59,7 @@ curl -X POST http://localhost:3000/api/users \
 
 ```bash
 # Login para obter token JWT
-curl -X POST http://localhost:3000/api/auth/login \
+curl -X POST http://209.145.59.215:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "dashboard@teste.com",
@@ -97,7 +97,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MTUyOTM1ZS05MzJlLTRhYzgtOTIxNS0
 
 ```bash
 # Teste básico
-curl -X GET http://localhost:3000/api/dashboard/summary \
+curl -X GET http://209.145.59.215:3000/api/dashboard/summary \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json"
 ```
@@ -114,10 +114,10 @@ curl -X GET http://localhost:3000/api/dashboard/summary \
 **Testes de erro:**
 ```bash
 # Sem token (deve retornar 401)
-curl -X GET http://localhost:3000/api/dashboard/summary
+curl -X GET http://209.145.59.215:3000/api/dashboard/summary
 
 # Token inválido (deve retornar 401)
-curl -X GET http://localhost:3000/api/dashboard/summary \
+curl -X GET http://209.145.59.215:3000/api/dashboard/summary \
   -H "Authorization: Bearer token_invalido"
 ```
 
@@ -127,7 +127,7 @@ curl -X GET http://localhost:3000/api/dashboard/summary \
 
 ```bash
 # Teste básico
-curl -X GET http://localhost:3000/api/dashboard/metrics \
+curl -X GET http://209.145.59.215:3000/api/dashboard/metrics \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json"
 ```
@@ -148,17 +148,17 @@ curl -X GET http://localhost:3000/api/dashboard/metrics \
 
 ```bash
 # Teste com parâmetros padrão (8 semanas)
-curl -X GET http://localhost:3000/api/dashboard/weekly-patients \
+curl -X GET http://209.145.59.215:3000/api/dashboard/weekly-patients \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json"
 
 # Teste com 4 semanas
-curl -X GET "http://localhost:3000/api/dashboard/weekly-patients?weeks=4" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/weekly-patients?weeks=4" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json"
 
 # Teste com 12 semanas
-curl -X GET "http://localhost:3000/api/dashboard/weekly-patients?weeks=12" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/weekly-patients?weeks=12" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json"
 ```
@@ -182,13 +182,13 @@ curl -X GET "http://localhost:3000/api/dashboard/weekly-patients?weeks=12" \
 **Testes de erro:**
 ```bash
 # Parâmetro weeks inválido (deve retornar 400)
-curl -X GET "http://localhost:3000/api/dashboard/weekly-patients?weeks=0" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/weekly-patients?weeks=0" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 
-curl -X GET "http://localhost:3000/api/dashboard/weekly-patients?weeks=100" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/weekly-patients?weeks=100" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 
-curl -X GET "http://localhost:3000/api/dashboard/weekly-patients?weeks=abc" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/weekly-patients?weeks=abc" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
@@ -198,17 +198,17 @@ curl -X GET "http://localhost:3000/api/dashboard/weekly-patients?weeks=abc" \
 
 ```bash
 # Teste com parâmetros padrão (10 medicamentos, 6 meses)
-curl -X GET http://localhost:3000/api/dashboard/top-medications \
+curl -X GET http://209.145.59.215:3000/api/dashboard/top-medications \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json"
 
 # Teste com 5 medicamentos dos últimos 3 meses
-curl -X GET "http://localhost:3000/api/dashboard/top-medications?limit=5&period=3" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/top-medications?limit=5&period=3" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json"
 
 # Teste com 15 medicamentos do último ano
-curl -X GET "http://localhost:3000/api/dashboard/top-medications?limit=15&period=12" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/top-medications?limit=15&period=12" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json"
 ```
@@ -237,16 +237,16 @@ curl -X GET "http://localhost:3000/api/dashboard/top-medications?limit=15&period
 **Testes de erro:**
 ```bash
 # Parâmetros inválidos (devem retornar 400)
-curl -X GET "http://localhost:3000/api/dashboard/top-medications?limit=0" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/top-medications?limit=0" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 
-curl -X GET "http://localhost:3000/api/dashboard/top-medications?limit=100" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/top-medications?limit=100" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 
-curl -X GET "http://localhost:3000/api/dashboard/top-medications?period=0" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/top-medications?period=0" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 
-curl -X GET "http://localhost:3000/api/dashboard/top-medications?period=30" \
+curl -X GET "http://209.145.59.215:3000/api/dashboard/top-medications?period=30" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
@@ -256,7 +256,7 @@ curl -X GET "http://localhost:3000/api/dashboard/top-medications?period=30" \
 
 ```bash
 # Teste básico
-curl -X GET http://localhost:3000/api/dashboard/monthly-revenue-comparison \
+curl -X GET http://209.145.59.215:3000/api/dashboard/monthly-revenue-comparison \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -H "Content-Type: application/json"
 ```
@@ -303,12 +303,12 @@ O script testará automaticamente:
 1. Abra o Insomnia/Postman
 2. Importe o arquivo: `test/insomnia-collection.json`
 3. Configure o environment com:
-   - `base_url`: http://localhost:3000/api
+   - `base_url`: http://209.145.59.215:3000/api
    - `auth_token`: Seu token JWT
 
 ### 3. Swagger UI
 
-Acesse a documentação interativa em: `http://localhost:3000/api/docs`
+Acesse a documentação interativa em: `http://209.145.59.215:3000/api/docs`
 
 1. Clique em "Authorize"
 2. Insira: `Bearer SEU_TOKEN_AQUI`
@@ -321,7 +321,7 @@ Acesse a documentação interativa em: `http://localhost:3000/api/docs`
 # script-teste-dashboard.sh
 
 TOKEN="SEU_TOKEN_AQUI"
-BASE_URL="http://localhost:3000"
+BASE_URL="http://209.145.59.215:3000"
 
 echo "🧪 Testando Dashboard Endpoints..."
 
@@ -360,11 +360,11 @@ chmod +x script-teste-dashboard.sh
 
 ```bash
 # Primeira requisição (sem cache)
-time curl -X GET http://localhost:3000/api/dashboard/summary \
+time curl -X GET http://209.145.59.215:3000/api/dashboard/summary \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 
 # Segunda requisição (com cache - deve ser mais rápida)
-time curl -X GET http://localhost:3000/api/dashboard/summary \
+time curl -X GET http://209.145.59.215:3000/api/dashboard/summary \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
@@ -378,11 +378,11 @@ TOKEN_USER1="token_usuario_1"
 TOKEN_USER2="token_usuario_2"
 
 # Requisição usuário 1
-curl -X GET http://localhost:3000/api/dashboard/summary \
+curl -X GET http://209.145.59.215:3000/api/dashboard/summary \
   -H "Authorization: Bearer $TOKEN_USER1"
 
 # Requisição usuário 2 (deve ter dados diferentes)
-curl -X GET http://localhost:3000/api/dashboard/summary \
+curl -X GET http://209.145.59.215:3000/api/dashboard/summary \
   -H "Authorization: Bearer $TOKEN_USER2"
 ```
 
@@ -402,10 +402,10 @@ npm run start:dev
 
 ```bash
 # Health check
-curl -X GET http://localhost:3000/api/health
+curl -X GET http://209.145.59.215:3000/api/health
 
 # Verificar se o servidor está respondendo
-curl -I http://localhost:3000
+curl -I http://209.145.59.215:3000
 ```
 
 ## ❗ Troubleshooting
@@ -442,7 +442,7 @@ netstat -tulpn | grep :3000
 ps aux | grep node
 
 # Verificar conectividade com banco
-curl -X GET http://localhost:3000/api/health
+curl -X GET http://209.145.59.215:3000/api/health
 ```
 
 ## 🎯 Checklist de Testes
@@ -481,7 +481,7 @@ curl -X GET http://localhost:3000/api/health
 **📝 Nota**: Substitua `SEU_TOKEN_AQUI` pelo token JWT real obtido no login.
 
 **🔗 Links Úteis**:
-- **Swagger UI**: http://localhost:3000/api/docs
-- **Backend API**: http://localhost:3000/api
+- **Swagger UI**: http://209.145.59.215:3000/api/docs
+- **Backend API**: http://209.145.59.215:3000/api
 - **Collection Insomnia**: `test/insomnia-collection.json`
 - **Script de Teste**: `test/test-dashboard-routes.sh`

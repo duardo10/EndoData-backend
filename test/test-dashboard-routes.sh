@@ -7,7 +7,7 @@ echo "🧪 EndoData Dashboard Routes Test"
 echo "=================================="
 
 # Configurações
-BASE_URL="http://localhost:3000/api"
+BASE_URL="http://209.145.59.215:3000/api"
 TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MTUyOTM1ZS05MzJlLTRhYzgtOTIxNS05YjQ5ZmNhYjFkYTEiLCJlbWFpbCI6ImRhc2hib2FyZEBmaXhlZC5jb20iLCJuYW1lIjoiRHIuIERhc2hib2FyZCBDb3JyaWdpZG8iLCJpc0FkbWluaXN0cmFkb3IiOmZhbHNlLCJpYXQiOjE3NTkzNDU0MjksImV4cCI6MTc1OTQzMTgyOX0.SyQ42f5o2RWH0ZFpr-yuSCaYFDpZALF8wRgRrI1XvCU"
 
 # Cores para output

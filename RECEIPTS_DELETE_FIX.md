@@ -102,12 +102,12 @@ docker-compose up -d
 ### 3. Validação:
 ```bash
 # Teste de remoção bem-sucedida
-curl -X DELETE "http://localhost:4000/api/receipts/[ID]" \
+curl -X DELETE "http://209.145.59.215:4000/api/receipts/[ID]" \
   -H "Authorization: Bearer [TOKEN]"
 # Retorno: HTTP 204 (No Content) ✅
 
 # Verificação de remoção
-curl -X GET "http://localhost:4000/api/receipts/[ID]" \
+curl -X GET "http://209.145.59.215:4000/api/receipts/[ID]" \
   -H "Authorization: Bearer [TOKEN]"
 # Retorno: HTTP 404 (Not Found) ✅
 ```
